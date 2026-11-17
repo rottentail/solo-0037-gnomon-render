@@ -1,0 +1,6 @@
+.venv
+.git
+.gnomon-data
+run-output
+__pycache__
+*.egg-info

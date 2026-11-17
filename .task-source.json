@@ -1,0 +1,5925 @@
+{
+  "task_source_schema_version": 1,
+  "cc_feedback_profile": "cc-feedback-2611",
+  "project_domain": "游戏、图形与多媒体",
+  "project_subdirection": "图形渲染",
+  "supported_task_types": [
+    "功能开发",
+    "代码重构",
+    "功能优化",
+    "依赖升级与迁移",
+    "质量保障",
+    "项目维护",
+    "技术讨论",
+    "问题排查与诊断",
+    "部署运维",
+    "泛Agent需求"
+  ],
+  "type_coverage": {
+    "功能开发": {
+      "status": "supported",
+      "reason": "网格到通道的实际计算具有新成像能力接入面",
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/shading.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "代码重构": {
+      "status": "supported",
+      "reason": "裁剪属性布局与成像组织职责可在保持像素语义下重划",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "功能优化": {
+      "status": "supported",
+      "reason": "已实现的构图、材质、拾取、对比和校样工作流有行为选择",
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/shading.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "依赖升级与迁移": {
+      "status": "supported",
+      "reason": "Pillow PNG与Pydantic场景契约存在可验证的具体替代后端",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "质量保障": {
+      "status": "supported",
+      "reason": "几何插值、样本归约与资源引用有独立数值观察依据",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "项目维护": {
+      "status": "supported",
+      "reason": "坐标、通道及部署限制需要从多模块重建技术材料",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "技术讨论": {
+      "status": "supported",
+      "reason": "双面法线、样本归约与精度预算存在实际方案差别",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "问题排查与诊断": {
+      "status": "supported",
+      "reason": "共面拾取歧义及深度预览归一化可以用真实输入复现",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "部署运维": {
+      "status": "supported",
+      "reason": "CPU区域成像及PNG/NumPy通道兼容需要环境和资源实测",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "泛Agent需求": {
+      "status": "supported",
+      "reason": "合成网格纹理与镜头内容能形成独立可用的成像素材包",
+      "source_anchors": [
+        "gnomon/bundle.py",
+        "gnomon/camera.py",
+        "gnomon/channels.py",
+        "gnomon/clipping.py",
+        "gnomon/color.py",
+        "gnomon/comparison.py",
+        "gnomon/inspection.py",
+        "gnomon/math3d.py",
+        "gnomon/mesh.py",
+        "gnomon/raster.py",
+        "gnomon/scene.py",
+        "gnomon/service.py",
+        "gnomon/shading.py",
+        "gnomon/sheet.py",
+        "gnomon/texture.py"
+      ]
+    },
+    "Bugfix": {
+      "status": "no_verified_defect",
+      "reason": "生产走查尚未确认真实契约缺陷；不预埋错误。"
+    }
+  },
+  "prompt_contract": {
+    "schema_version": 1,
+    "mode": "integrated",
+    "baseline_tier": "deep-task-ready",
+    "generation_scope": {
+      "mode": "all_supported"
+    },
+    "minimum_active_prompts": {
+      "功能开发": 20,
+      "代码重构": 2,
+      "功能优化": 20,
+      "依赖升级与迁移": 2,
+      "质量保障": 2,
+      "项目维护": 2,
+      "技术讨论": 2,
+      "问题排查与诊断": 2,
+      "部署运维": 2,
+      "泛Agent需求": 10
+    },
+    "minimum_anchors": {
+      "功能开发": 25,
+      "代码重构": 15,
+      "功能优化": 25,
+      "依赖升级与迁移": 15,
+      "质量保障": 15,
+      "项目维护": 15,
+      "技术讨论": 15,
+      "问题排查与诊断": 15,
+      "部署运维": 15,
+      "泛Agent需求": 15
+    },
+    "capacity_floor": {
+      "modules": 8,
+      "workflows": 10,
+      "mechanisms": 8,
+      "entities": 8,
+      "state_machines": 5,
+      "extension_seams": 12,
+      "tension_points": 10
+    }
+  },
+  "entities": [
+    {
+      "id": "mesh",
+      "label": "网格",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "索引有效",
+        "三角不退化"
+      ]
+    },
+    {
+      "id": "texture",
+      "label": "纹理",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "sRGB解码",
+        "直通alpha"
+      ]
+    },
+    {
+      "id": "scene",
+      "label": "场景修订",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "父图无环",
+        "引用明确"
+      ]
+    },
+    {
+      "id": "node",
+      "label": "层级节点",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "唯一key",
+        "世界姿态可逆"
+      ]
+    },
+    {
+      "id": "lens",
+      "label": "镜头",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "near<far",
+        "相机基不退化"
+      ]
+    },
+    {
+      "id": "surface",
+      "label": "材质",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "线性空间着色",
+        "alpha裁切"
+      ]
+    },
+    {
+      "id": "render",
+      "label": "多通道静帧",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "最近表面通道一致"
+      ]
+    },
+    {
+      "id": "comparison",
+      "label": "成像比较",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "镜头语义相容"
+      ]
+    },
+    {
+      "id": "sheet",
+      "label": "多视角校样",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "镜头索引与图格一致"
+      ]
+    },
+    {
+      "id": "bundle",
+      "label": "成像包",
+      "relations": [
+        "scene.references.mesh",
+        "scene.references.texture",
+        "render.freezes.scene",
+        "comparison.references.render",
+        "sheet.freezes.scene",
+        "bundle.contains.render"
+      ],
+      "invariants": [
+        "描述实际冻结输入"
+      ]
+    }
+  ],
+  "state_machines": [
+    {
+      "subject": "mesh",
+      "states": [
+        "active",
+        "retired"
+      ],
+      "transitions": [
+        "active->retired",
+        "retired->active"
+      ],
+      "invariants": [
+        "内容不可变；状态转换受当前状态约束"
+      ]
+    },
+    {
+      "subject": "scene",
+      "states": [
+        "active",
+        "archived"
+      ],
+      "transitions": [
+        "active->archived",
+        "archived->active"
+      ],
+      "invariants": [
+        "内容不可变；状态转换受当前状态约束"
+      ]
+    },
+    {
+      "subject": "render",
+      "states": [
+        "queued",
+        "running",
+        "complete",
+        "failed"
+      ],
+      "transitions": [
+        "queued->running",
+        "running->complete",
+        "running->failed",
+        "queued->failed"
+      ],
+      "invariants": [
+        "内容不可变；状态转换受当前状态约束"
+      ]
+    },
+    {
+      "subject": "comparison",
+      "states": [
+        "measuring",
+        "complete",
+        "failed"
+      ],
+      "transitions": [
+        "measuring->complete",
+        "measuring->failed"
+      ],
+      "invariants": [
+        "内容不可变；状态转换受当前状态约束"
+      ]
+    },
+    {
+      "subject": "sheet",
+      "states": [
+        "building",
+        "complete",
+        "failed"
+      ],
+      "transitions": [
+        "building->complete",
+        "building->failed"
+      ],
+      "invariants": [
+        "内容不可变；状态转换受当前状态约束"
+      ]
+    },
+    {
+      "subject": "bundle",
+      "states": [
+        "packing",
+        "complete",
+        "failed"
+      ],
+      "transitions": [
+        "packing->complete",
+        "packing->failed"
+      ],
+      "invariants": [
+        "内容不可变；状态转换受当前状态约束"
+      ]
+    }
+  ],
+  "capability_families": [
+    {
+      "family": "网格索引与退化面积",
+      "occupied_by": [
+        "topology"
+      ],
+      "available": true
+    },
+    {
+      "family": "面积加权顶点法线",
+      "occupied_by": [
+        "area-normal"
+      ],
+      "available": true
+    },
+    {
+      "family": "作者法线的归一化",
+      "occupied_by": [
+        "authored-normal"
+      ],
+      "available": true
+    },
+    {
+      "family": "逐顶点UV与纹理绑定",
+      "occupied_by": [
+        "uv-contract"
+      ],
+      "available": true
+    },
+    {
+      "family": "纹理sRGB解码",
+      "occupied_by": [
+        "srgb"
+      ],
+      "available": true
+    },
+    {
+      "family": "透明色片滤波",
+      "occupied_by": [
+        "alpha-filter"
+      ],
+      "available": true
+    },
+    {
+      "family": "父子仿射坐标",
+      "occupied_by": [
+        "hierarchy"
+      ],
+      "available": true
+    },
+    {
+      "family": "祖先可见性",
+      "occupied_by": [
+        "visibility"
+      ],
+      "available": true
+    },
+    {
+      "family": "非均匀缩放法线",
+      "occupied_by": [
+        "normal-matrix"
+      ],
+      "available": true
+    },
+    {
+      "family": "镜像与面绕序",
+      "occupied_by": [
+        "winding"
+      ],
+      "available": true
+    },
+    {
+      "family": "垂直视角和宽高比",
+      "occupied_by": [
+        "perspective"
+      ],
+      "available": true
+    },
+    {
+      "family": "正交视域",
+      "occupied_by": [
+        "orthographic"
+      ],
+      "available": true
+    },
+    {
+      "family": "六平面齐次裁剪",
+      "occupied_by": [
+        "clip"
+      ],
+      "available": true
+    },
+    {
+      "family": "裁剪属性交点",
+      "occupied_by": [
+        "clip-attributes"
+      ],
+      "available": true
+    },
+    {
+      "family": "透视校正属性",
+      "occupied_by": [
+        "interpolation"
+      ],
+      "available": true
+    },
+    {
+      "family": "共享边采样所有权",
+      "occupied_by": [
+        "shared-edge"
+      ],
+      "available": true
+    },
+    {
+      "family": "最近深度和平局",
+      "occupied_by": [
+        "depth-tie"
+      ],
+      "available": true
+    },
+    {
+      "family": "repeat与clamp寻址",
+      "occupied_by": [
+        "wrap"
+      ],
+      "available": true
+    },
+    {
+      "family": "材质透明裁切",
+      "occupied_by": [
+        "cutout"
+      ],
+      "available": true
+    },
+    {
+      "family": "定向Lambert照明",
+      "occupied_by": [
+        "lambert"
+      ],
+      "available": true
+    },
+    {
+      "family": "颜色超采样归约",
+      "occupied_by": [
+        "resolve-color"
+      ],
+      "available": true
+    },
+    {
+      "family": "最近子采样表面归约",
+      "occupied_by": [
+        "resolve-surface"
+      ],
+      "available": true
+    },
+    {
+      "family": "整图坐标区域成像",
+      "occupied_by": [
+        "crop"
+      ],
+      "available": true
+    },
+    {
+      "family": "成像语义兼容性",
+      "occupied_by": [
+        "compare-camera"
+      ],
+      "available": true
+    },
+    {
+      "family": "语义节点对比",
+      "occupied_by": [
+        "compare-node"
+      ],
+      "available": true
+    },
+    {
+      "family": "原始深度与预览归一化",
+      "occupied_by": [
+        "compare-depth"
+      ],
+      "available": true
+    },
+    {
+      "family": "目标中心多视角",
+      "occupied_by": [
+        "orbit"
+      ],
+      "available": true
+    },
+    {
+      "family": "校样图布局与索引",
+      "occupied_by": [
+        "sheet-layout"
+      ],
+      "available": true
+    },
+    {
+      "family": "实际输入冻结",
+      "occupied_by": [
+        "freeze"
+      ],
+      "available": true
+    },
+    {
+      "family": "停用与旧引用",
+      "occupied_by": [
+        "retire"
+      ],
+      "available": true
+    },
+    {
+      "family": "场景修订血缘",
+      "occupied_by": [
+        "revision"
+      ],
+      "available": true
+    },
+    {
+      "family": "有界采样缓冲",
+      "occupied_by": [
+        "budget"
+      ],
+      "available": true
+    },
+    {
+      "family": "通道摘要完整性",
+      "occupied_by": [
+        "artifact-digest"
+      ],
+      "available": true
+    },
+    {
+      "family": "中断记录状态",
+      "occupied_by": [
+        "restart"
+      ],
+      "available": true
+    }
+  ],
+  "extension_seams": [
+    {
+      "id": "topology",
+      "anchor": "网格索引与退化面积",
+      "entry": "mesh-ingest",
+      "distinct_outcome": "有效拓扑才可进入片元管线",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "area-normal",
+      "anchor": "面积加权顶点法线",
+      "entry": "mesh-ingest",
+      "distinct_outcome": "共享顶点聚合法线与入射光一致",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/shading.py"
+      ]
+    },
+    {
+      "id": "authored-normal",
+      "anchor": "作者法线的归一化",
+      "entry": "mesh-ingest",
+      "distinct_outcome": "显式法线不被生成法线覆盖",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ]
+    },
+    {
+      "id": "uv-contract",
+      "anchor": "逐顶点UV与纹理绑定",
+      "entry": "texture-ingest",
+      "distinct_outcome": "缺失UV不得静默生成纹理坐标",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ]
+    },
+    {
+      "id": "srgb",
+      "anchor": "纹理sRGB解码",
+      "entry": "texture-ingest",
+      "distinct_outcome": "颜色与线性照明在同一空间",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ]
+    },
+    {
+      "id": "alpha-filter",
+      "anchor": "透明色片滤波",
+      "entry": "texture-ingest",
+      "distinct_outcome": "透明边缘的RGB不引入黑色边线",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/shading.py"
+      ]
+    },
+    {
+      "id": "hierarchy",
+      "anchor": "父子仿射坐标",
+      "entry": "scene-revise",
+      "distinct_outcome": "子节点世界姿态遵循父节点变换",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ]
+    },
+    {
+      "id": "visibility",
+      "anchor": "祖先可见性",
+      "entry": "scene-revise",
+      "distinct_outcome": "不可见祖先下的表面不进入通道",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "normal-matrix",
+      "anchor": "非均匀缩放法线",
+      "entry": "scene-preflight",
+      "distinct_outcome": "世界法线垂直于变换后的切面",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ]
+    },
+    {
+      "id": "winding",
+      "anchor": "镜像与面绕序",
+      "entry": "still-render",
+      "distinct_outcome": "单面可见性按世界空间投影绕序判断",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "perspective",
+      "anchor": "垂直视角和宽高比",
+      "entry": "still-render",
+      "distinct_outcome": "距离改变透视比例但不改变采样坐标约定",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "orthographic",
+      "anchor": "正交视域",
+      "entry": "still-render",
+      "distinct_outcome": "正交纵向span和像素比例一致",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "clip",
+      "anchor": "六平面齐次裁剪",
+      "entry": "still-render",
+      "distinct_outcome": "越过近平面的表面不会反投到画面后方",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "clip-attributes",
+      "anchor": "裁剪属性交点",
+      "entry": "still-render",
+      "distinct_outcome": "新顶点UV及世界位置保持同一表面含义",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "interpolation",
+      "anchor": "透视校正属性",
+      "entry": "still-render",
+      "distinct_outcome": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ]
+    },
+    {
+      "id": "shared-edge",
+      "anchor": "共享边采样所有权",
+      "entry": "still-render",
+      "distinct_outcome": "相邻三角共享边不重复覆盖或漏采",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/channels.py"
+      ]
+    },
+    {
+      "id": "depth-tie",
+      "anchor": "最近深度和平局",
+      "entry": "pixel-inspect",
+      "distinct_outcome": "共面重叠的拾取遵守遍历次序",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ]
+    },
+    {
+      "id": "wrap",
+      "anchor": "repeat与clamp寻址",
+      "entry": "texture-ingest",
+      "distinct_outcome": "UV边界从纹理空间映射到PNG行方向",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "cutout",
+      "anchor": "材质透明裁切",
+      "entry": "still-render",
+      "distinct_outcome": "被裁切的纹理样本不遮挡后方表面",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "lambert",
+      "anchor": "定向Lambert照明",
+      "entry": "still-render",
+      "distinct_outcome": "世界法线和光方向共同决定线性辐亮度",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/color.py"
+      ]
+    },
+    {
+      "id": "resolve-color",
+      "anchor": "颜色超采样归约",
+      "entry": "still-render",
+      "distinct_outcome": "含背景的采样平均在线性空间完成",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ]
+    },
+    {
+      "id": "resolve-surface",
+      "anchor": "最近子采样表面归约",
+      "entry": "pixel-inspect",
+      "distinct_outcome": "对象世界坐标法线与最近深度指向同一表面",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/inspection.py"
+      ]
+    },
+    {
+      "id": "crop",
+      "anchor": "整图坐标区域成像",
+      "entry": "still-render",
+      "distinct_outcome": "区域渲染等于原镜头整图裁切",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ]
+    },
+    {
+      "id": "compare-camera",
+      "anchor": "成像语义兼容性",
+      "entry": "image-compare",
+      "distinct_outcome": "不同镜头尺寸采样不可直接量化为材质变化",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/comparison.py"
+      ]
+    },
+    {
+      "id": "compare-node",
+      "anchor": "语义节点对比",
+      "entry": "image-compare",
+      "distinct_outcome": "跨修订数值ID重排不产生伪节点差异",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ]
+    },
+    {
+      "id": "compare-depth",
+      "anchor": "原始深度与预览归一化",
+      "entry": "image-compare",
+      "distinct_outcome": "预览灰度不充当跨图绝对深度",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/comparison.py"
+      ]
+    },
+    {
+      "id": "orbit",
+      "anchor": "目标中心多视角",
+      "entry": "view-sheet",
+      "distinct_outcome": "每个视角保持相同目标和相机距离",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ]
+    },
+    {
+      "id": "sheet-layout",
+      "anchor": "校样图布局与索引",
+      "entry": "view-sheet",
+      "distinct_outcome": "索引矩形和镜头对应实际像素格",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/sheet.py",
+        "gnomon/service.py"
+      ]
+    },
+    {
+      "id": "freeze",
+      "anchor": "实际输入冻结",
+      "entry": "render-bundle",
+      "distinct_outcome": "归档引用成像时实际资源内容和摘要",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ]
+    },
+    {
+      "id": "retire",
+      "anchor": "停用与旧引用",
+      "entry": "resource-retire",
+      "distinct_outcome": "新场景拒绝停用资源旧场景可继续成像",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/catalog.py",
+        "gnomon/service.py"
+      ]
+    },
+    {
+      "id": "revision",
+      "anchor": "场景修订血缘",
+      "entry": "scene-revise",
+      "distinct_outcome": "新版本不覆盖旧场景及其镜头",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/catalog.py",
+        "gnomon/service.py"
+      ]
+    },
+    {
+      "id": "budget",
+      "anchor": "有界采样缓冲",
+      "entry": "scene-preflight",
+      "distinct_outcome": "预检与实际成像使用相同像素采样预算",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/raster.py"
+      ]
+    },
+    {
+      "id": "artifact-digest",
+      "anchor": "通道摘要完整性",
+      "entry": "render-bundle",
+      "distinct_outcome": "损坏产物不能以complete内容交付",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/artifacts.py",
+        "gnomon/service.py"
+      ]
+    },
+    {
+      "id": "restart",
+      "anchor": "中断记录状态",
+      "entry": "render-bundle",
+      "distinct_outcome": "重启不把未完成通道作为可读成像",
+      "mechanism": "policy_rules",
+      "source_anchors": [
+        "gnomon/catalog.py",
+        "gnomon/artifacts.py"
+      ]
+    }
+  ],
+  "tension_points": [
+    {
+      "workflow_id": "mesh-ingest",
+      "description": "网格索引与退化面积涉及的正确性与表示选择：有效拓扑才可进入片元管线",
+      "observable_failure": "违背时可在通道或记录中观察到：有效拓扑才可进入片元管线"
+    },
+    {
+      "workflow_id": "mesh-ingest",
+      "description": "面积加权顶点法线涉及的正确性与表示选择：共享顶点聚合法线与入射光一致",
+      "observable_failure": "违背时可在通道或记录中观察到：共享顶点聚合法线与入射光一致"
+    },
+    {
+      "workflow_id": "mesh-ingest",
+      "description": "作者法线的归一化涉及的正确性与表示选择：显式法线不被生成法线覆盖",
+      "observable_failure": "违背时可在通道或记录中观察到：显式法线不被生成法线覆盖"
+    },
+    {
+      "workflow_id": "texture-ingest",
+      "description": "逐顶点UV与纹理绑定涉及的正确性与表示选择：缺失UV不得静默生成纹理坐标",
+      "observable_failure": "违背时可在通道或记录中观察到：缺失UV不得静默生成纹理坐标"
+    },
+    {
+      "workflow_id": "texture-ingest",
+      "description": "纹理sRGB解码涉及的正确性与表示选择：颜色与线性照明在同一空间",
+      "observable_failure": "违背时可在通道或记录中观察到：颜色与线性照明在同一空间"
+    },
+    {
+      "workflow_id": "texture-ingest",
+      "description": "透明色片滤波涉及的正确性与表示选择：透明边缘的RGB不引入黑色边线",
+      "observable_failure": "违背时可在通道或记录中观察到：透明边缘的RGB不引入黑色边线"
+    },
+    {
+      "workflow_id": "scene-revise",
+      "description": "父子仿射坐标涉及的正确性与表示选择：子节点世界姿态遵循父节点变换",
+      "observable_failure": "违背时可在通道或记录中观察到：子节点世界姿态遵循父节点变换"
+    },
+    {
+      "workflow_id": "scene-revise",
+      "description": "祖先可见性涉及的正确性与表示选择：不可见祖先下的表面不进入通道",
+      "observable_failure": "违背时可在通道或记录中观察到：不可见祖先下的表面不进入通道"
+    },
+    {
+      "workflow_id": "scene-preflight",
+      "description": "非均匀缩放法线涉及的正确性与表示选择：世界法线垂直于变换后的切面",
+      "observable_failure": "违背时可在通道或记录中观察到：世界法线垂直于变换后的切面"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "镜像与面绕序涉及的正确性与表示选择：单面可见性按世界空间投影绕序判断",
+      "observable_failure": "违背时可在通道或记录中观察到：单面可见性按世界空间投影绕序判断"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "垂直视角和宽高比涉及的正确性与表示选择：距离改变透视比例但不改变采样坐标约定",
+      "observable_failure": "违背时可在通道或记录中观察到：距离改变透视比例但不改变采样坐标约定"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "正交视域涉及的正确性与表示选择：正交纵向span和像素比例一致",
+      "observable_failure": "违背时可在通道或记录中观察到：正交纵向span和像素比例一致"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "六平面齐次裁剪涉及的正确性与表示选择：越过近平面的表面不会反投到画面后方",
+      "observable_failure": "违背时可在通道或记录中观察到：越过近平面的表面不会反投到画面后方"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "裁剪属性交点涉及的正确性与表示选择：新顶点UV及世界位置保持同一表面含义",
+      "observable_failure": "违背时可在通道或记录中观察到：新顶点UV及世界位置保持同一表面含义"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "透视校正属性涉及的正确性与表示选择：倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable_failure": "违背时可在通道或记录中观察到：倾斜表面的UV及世界坐标不使用错误屏幕线性权重"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "共享边采样所有权涉及的正确性与表示选择：相邻三角共享边不重复覆盖或漏采",
+      "observable_failure": "违背时可在通道或记录中观察到：相邻三角共享边不重复覆盖或漏采"
+    },
+    {
+      "workflow_id": "pixel-inspect",
+      "description": "最近深度和平局涉及的正确性与表示选择：共面重叠的拾取遵守遍历次序",
+      "observable_failure": "违背时可在通道或记录中观察到：共面重叠的拾取遵守遍历次序"
+    },
+    {
+      "workflow_id": "texture-ingest",
+      "description": "repeat与clamp寻址涉及的正确性与表示选择：UV边界从纹理空间映射到PNG行方向",
+      "observable_failure": "违背时可在通道或记录中观察到：UV边界从纹理空间映射到PNG行方向"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "材质透明裁切涉及的正确性与表示选择：被裁切的纹理样本不遮挡后方表面",
+      "observable_failure": "违背时可在通道或记录中观察到：被裁切的纹理样本不遮挡后方表面"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "定向Lambert照明涉及的正确性与表示选择：世界法线和光方向共同决定线性辐亮度",
+      "observable_failure": "违背时可在通道或记录中观察到：世界法线和光方向共同决定线性辐亮度"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "颜色超采样归约涉及的正确性与表示选择：含背景的采样平均在线性空间完成",
+      "observable_failure": "违背时可在通道或记录中观察到：含背景的采样平均在线性空间完成"
+    },
+    {
+      "workflow_id": "pixel-inspect",
+      "description": "最近子采样表面归约涉及的正确性与表示选择：对象世界坐标法线与最近深度指向同一表面",
+      "observable_failure": "违背时可在通道或记录中观察到：对象世界坐标法线与最近深度指向同一表面"
+    },
+    {
+      "workflow_id": "still-render",
+      "description": "整图坐标区域成像涉及的正确性与表示选择：区域渲染等于原镜头整图裁切",
+      "observable_failure": "违背时可在通道或记录中观察到：区域渲染等于原镜头整图裁切"
+    },
+    {
+      "workflow_id": "image-compare",
+      "description": "成像语义兼容性涉及的正确性与表示选择：不同镜头尺寸采样不可直接量化为材质变化",
+      "observable_failure": "违背时可在通道或记录中观察到：不同镜头尺寸采样不可直接量化为材质变化"
+    },
+    {
+      "workflow_id": "image-compare",
+      "description": "语义节点对比涉及的正确性与表示选择：跨修订数值ID重排不产生伪节点差异",
+      "observable_failure": "违背时可在通道或记录中观察到：跨修订数值ID重排不产生伪节点差异"
+    },
+    {
+      "workflow_id": "image-compare",
+      "description": "原始深度与预览归一化涉及的正确性与表示选择：预览灰度不充当跨图绝对深度",
+      "observable_failure": "违背时可在通道或记录中观察到：预览灰度不充当跨图绝对深度"
+    },
+    {
+      "workflow_id": "view-sheet",
+      "description": "目标中心多视角涉及的正确性与表示选择：每个视角保持相同目标和相机距离",
+      "observable_failure": "违背时可在通道或记录中观察到：每个视角保持相同目标和相机距离"
+    },
+    {
+      "workflow_id": "view-sheet",
+      "description": "校样图布局与索引涉及的正确性与表示选择：索引矩形和镜头对应实际像素格",
+      "observable_failure": "违背时可在通道或记录中观察到：索引矩形和镜头对应实际像素格"
+    },
+    {
+      "workflow_id": "render-bundle",
+      "description": "实际输入冻结涉及的正确性与表示选择：归档引用成像时实际资源内容和摘要",
+      "observable_failure": "违背时可在通道或记录中观察到：归档引用成像时实际资源内容和摘要"
+    },
+    {
+      "workflow_id": "resource-retire",
+      "description": "停用与旧引用涉及的正确性与表示选择：新场景拒绝停用资源旧场景可继续成像",
+      "observable_failure": "违背时可在通道或记录中观察到：新场景拒绝停用资源旧场景可继续成像"
+    },
+    {
+      "workflow_id": "scene-revise",
+      "description": "场景修订血缘涉及的正确性与表示选择：新版本不覆盖旧场景及其镜头",
+      "observable_failure": "违背时可在通道或记录中观察到：新版本不覆盖旧场景及其镜头"
+    },
+    {
+      "workflow_id": "scene-preflight",
+      "description": "有界采样缓冲涉及的正确性与表示选择：预检与实际成像使用相同像素采样预算",
+      "observable_failure": "违背时可在通道或记录中观察到：预检与实际成像使用相同像素采样预算"
+    },
+    {
+      "workflow_id": "render-bundle",
+      "description": "通道摘要完整性涉及的正确性与表示选择：损坏产物不能以complete内容交付",
+      "observable_failure": "违背时可在通道或记录中观察到：损坏产物不能以complete内容交付"
+    },
+    {
+      "workflow_id": "render-bundle",
+      "description": "中断记录状态涉及的正确性与表示选择：重启不把未完成通道作为可读成像",
+      "observable_failure": "违背时可在通道或记录中观察到：重启不把未完成通道作为可读成像"
+    }
+  ],
+  "prompt_anchors": [
+    {
+      "id": "00-topology",
+      "task_type": "功能开发",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "功能开发观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      },
+      "extension_seam_id": "topology"
+    },
+    {
+      "id": "00-area-normal",
+      "task_type": "功能开发",
+      "capability_family": "面积加权顶点法线",
+      "subject": "area-normal",
+      "state": "implemented",
+      "invariant": "共享顶点聚合法线与入射光一致",
+      "observable": "功能开发观察面：面积加权顶点法线的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "shade"
+        ]
+      },
+      "extension_seam_id": "area-normal"
+    },
+    {
+      "id": "00-authored-normal",
+      "task_type": "功能开发",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "功能开发观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      },
+      "extension_seam_id": "authored-normal"
+    },
+    {
+      "id": "00-uv-contract",
+      "task_type": "功能开发",
+      "capability_family": "逐顶点UV与纹理绑定",
+      "subject": "uv-contract",
+      "state": "implemented",
+      "invariant": "缺失UV不得静默生成纹理坐标",
+      "observable": "功能开发观察面：逐顶点UV与纹理绑定的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      },
+      "extension_seam_id": "uv-contract"
+    },
+    {
+      "id": "00-srgb",
+      "task_type": "功能开发",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "功能开发观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      },
+      "extension_seam_id": "srgb"
+    },
+    {
+      "id": "00-alpha-filter",
+      "task_type": "功能开发",
+      "capability_family": "透明色片滤波",
+      "subject": "alpha-filter",
+      "state": "implemented",
+      "invariant": "透明边缘的RGB不引入黑色边线",
+      "observable": "功能开发观察面：透明色片滤波的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "sample_texture",
+          "shade"
+        ]
+      },
+      "extension_seam_id": "alpha-filter"
+    },
+    {
+      "id": "00-hierarchy",
+      "task_type": "功能开发",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "功能开发观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      },
+      "extension_seam_id": "hierarchy"
+    },
+    {
+      "id": "00-visibility",
+      "task_type": "功能开发",
+      "capability_family": "祖先可见性",
+      "subject": "visibility",
+      "state": "implemented",
+      "invariant": "不可见祖先下的表面不进入通道",
+      "observable": "功能开发观察面：祖先可见性的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "render_samples"
+        ]
+      },
+      "extension_seam_id": "visibility"
+    },
+    {
+      "id": "00-normal-matrix",
+      "task_type": "功能开发",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "功能开发观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      },
+      "extension_seam_id": "normal-matrix"
+    },
+    {
+      "id": "00-winding",
+      "task_type": "功能开发",
+      "capability_family": "镜像与面绕序",
+      "subject": "winding",
+      "state": "implemented",
+      "invariant": "单面可见性按世界空间投影绕序判断",
+      "observable": "功能开发观察面：镜像与面绕序的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "raster_triangle"
+        ]
+      },
+      "extension_seam_id": "winding"
+    },
+    {
+      "id": "00-perspective",
+      "task_type": "功能开发",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "功能开发观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      },
+      "extension_seam_id": "perspective"
+    },
+    {
+      "id": "00-orthographic",
+      "task_type": "功能开发",
+      "capability_family": "正交视域",
+      "subject": "orthographic",
+      "state": "implemented",
+      "invariant": "正交纵向span和像素比例一致",
+      "observable": "功能开发观察面：正交视域的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      },
+      "extension_seam_id": "orthographic"
+    },
+    {
+      "id": "00-clip",
+      "task_type": "功能开发",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "功能开发观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      },
+      "extension_seam_id": "clip"
+    },
+    {
+      "id": "00-clip-attributes",
+      "task_type": "功能开发",
+      "capability_family": "裁剪属性交点",
+      "subject": "clip-attributes",
+      "state": "implemented",
+      "invariant": "新顶点UV及世界位置保持同一表面含义",
+      "observable": "功能开发观察面：裁剪属性交点的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "raster_triangle"
+        ]
+      },
+      "extension_seam_id": "clip-attributes"
+    },
+    {
+      "id": "00-interpolation",
+      "task_type": "功能开发",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "功能开发观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      },
+      "extension_seam_id": "interpolation"
+    },
+    {
+      "id": "00-shared-edge",
+      "task_type": "功能开发",
+      "capability_family": "共享边采样所有权",
+      "subject": "shared-edge",
+      "state": "implemented",
+      "invariant": "相邻三角共享边不重复覆盖或漏采",
+      "observable": "功能开发观察面：共享边采样所有权的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/channels.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/channels.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "resolve_samples"
+        ]
+      },
+      "extension_seam_id": "shared-edge"
+    },
+    {
+      "id": "00-depth-tie",
+      "task_type": "功能开发",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "功能开发观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      },
+      "extension_seam_id": "depth-tie"
+    },
+    {
+      "id": "00-wrap",
+      "task_type": "功能开发",
+      "capability_family": "repeat与clamp寻址",
+      "subject": "wrap",
+      "state": "implemented",
+      "invariant": "UV边界从纹理空间映射到PNG行方向",
+      "observable": "功能开发观察面：repeat与clamp寻址的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "sample_texture",
+          "raster_triangle"
+        ]
+      },
+      "extension_seam_id": "wrap"
+    },
+    {
+      "id": "00-cutout",
+      "task_type": "功能开发",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "功能开发观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      },
+      "extension_seam_id": "cutout"
+    },
+    {
+      "id": "00-lambert",
+      "task_type": "功能开发",
+      "capability_family": "定向Lambert照明",
+      "subject": "lambert",
+      "state": "implemented",
+      "invariant": "世界法线和光方向共同决定线性辐亮度",
+      "observable": "功能开发观察面：定向Lambert照明的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "shade",
+          "encode_rgb"
+        ]
+      },
+      "extension_seam_id": "lambert"
+    },
+    {
+      "id": "00-resolve-color",
+      "task_type": "功能开发",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "功能开发观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      },
+      "extension_seam_id": "resolve-color"
+    },
+    {
+      "id": "00-resolve-surface",
+      "task_type": "功能开发",
+      "capability_family": "最近子采样表面归约",
+      "subject": "resolve-surface",
+      "state": "implemented",
+      "invariant": "对象世界坐标法线与最近深度指向同一表面",
+      "observable": "功能开发观察面：最近子采样表面归约的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "inspect_pixel"
+        ]
+      },
+      "extension_seam_id": "resolve-surface"
+    },
+    {
+      "id": "00-crop",
+      "task_type": "功能开发",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "功能开发观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      },
+      "extension_seam_id": "crop"
+    },
+    {
+      "id": "00-compare-camera",
+      "task_type": "功能开发",
+      "capability_family": "成像语义兼容性",
+      "subject": "compare-camera",
+      "state": "implemented",
+      "invariant": "不同镜头尺寸采样不可直接量化为材质变化",
+      "observable": "功能开发观察面：成像语义兼容性的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "compare_frames"
+        ]
+      },
+      "extension_seam_id": "compare-camera"
+    },
+    {
+      "id": "00-compare-node",
+      "task_type": "功能开发",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "功能开发观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      },
+      "extension_seam_id": "compare-node"
+    },
+    {
+      "id": "02-topology",
+      "task_type": "代码重构",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "代码重构观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "02-authored-normal",
+      "task_type": "代码重构",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "代码重构观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "02-srgb",
+      "task_type": "代码重构",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "代码重构观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "02-hierarchy",
+      "task_type": "代码重构",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "代码重构观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "02-normal-matrix",
+      "task_type": "代码重构",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "代码重构观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "02-perspective",
+      "task_type": "代码重构",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "代码重构观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "02-clip",
+      "task_type": "代码重构",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "代码重构观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "02-interpolation",
+      "task_type": "代码重构",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "代码重构观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "02-depth-tie",
+      "task_type": "代码重构",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "代码重构观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "02-cutout",
+      "task_type": "代码重构",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "代码重构观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "02-resolve-color",
+      "task_type": "代码重构",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "代码重构观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "02-crop",
+      "task_type": "代码重构",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "代码重构观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "02-compare-node",
+      "task_type": "代码重构",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "代码重构观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "02-orbit",
+      "task_type": "代码重构",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "代码重构观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "02-freeze",
+      "task_type": "代码重构",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "代码重构观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "03-topology",
+      "task_type": "功能优化",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "功能优化观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "03-area-normal",
+      "task_type": "功能优化",
+      "capability_family": "面积加权顶点法线",
+      "subject": "area-normal",
+      "state": "implemented",
+      "invariant": "共享顶点聚合法线与入射光一致",
+      "observable": "功能优化观察面：面积加权顶点法线的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "03-authored-normal",
+      "task_type": "功能优化",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "功能优化观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "03-uv-contract",
+      "task_type": "功能优化",
+      "capability_family": "逐顶点UV与纹理绑定",
+      "subject": "uv-contract",
+      "state": "implemented",
+      "invariant": "缺失UV不得静默生成纹理坐标",
+      "observable": "功能优化观察面：逐顶点UV与纹理绑定的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "03-srgb",
+      "task_type": "功能优化",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "功能优化观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "03-alpha-filter",
+      "task_type": "功能优化",
+      "capability_family": "透明色片滤波",
+      "subject": "alpha-filter",
+      "state": "implemented",
+      "invariant": "透明边缘的RGB不引入黑色边线",
+      "observable": "功能优化观察面：透明色片滤波的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "sample_texture",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "03-hierarchy",
+      "task_type": "功能优化",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "功能优化观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "03-visibility",
+      "task_type": "功能优化",
+      "capability_family": "祖先可见性",
+      "subject": "visibility",
+      "state": "implemented",
+      "invariant": "不可见祖先下的表面不进入通道",
+      "observable": "功能优化观察面：祖先可见性的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "03-normal-matrix",
+      "task_type": "功能优化",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "功能优化观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "03-winding",
+      "task_type": "功能优化",
+      "capability_family": "镜像与面绕序",
+      "subject": "winding",
+      "state": "implemented",
+      "invariant": "单面可见性按世界空间投影绕序判断",
+      "observable": "功能优化观察面：镜像与面绕序的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "03-perspective",
+      "task_type": "功能优化",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "功能优化观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "03-orthographic",
+      "task_type": "功能优化",
+      "capability_family": "正交视域",
+      "subject": "orthographic",
+      "state": "implemented",
+      "invariant": "正交纵向span和像素比例一致",
+      "observable": "功能优化观察面：正交视域的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "03-clip",
+      "task_type": "功能优化",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "功能优化观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "03-clip-attributes",
+      "task_type": "功能优化",
+      "capability_family": "裁剪属性交点",
+      "subject": "clip-attributes",
+      "state": "implemented",
+      "invariant": "新顶点UV及世界位置保持同一表面含义",
+      "observable": "功能优化观察面：裁剪属性交点的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "03-interpolation",
+      "task_type": "功能优化",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "功能优化观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "03-shared-edge",
+      "task_type": "功能优化",
+      "capability_family": "共享边采样所有权",
+      "subject": "shared-edge",
+      "state": "implemented",
+      "invariant": "相邻三角共享边不重复覆盖或漏采",
+      "observable": "功能优化观察面：共享边采样所有权的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/channels.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/channels.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "resolve_samples"
+        ]
+      }
+    },
+    {
+      "id": "03-depth-tie",
+      "task_type": "功能优化",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "功能优化观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "03-wrap",
+      "task_type": "功能优化",
+      "capability_family": "repeat与clamp寻址",
+      "subject": "wrap",
+      "state": "implemented",
+      "invariant": "UV边界从纹理空间映射到PNG行方向",
+      "observable": "功能优化观察面：repeat与clamp寻址的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "sample_texture",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "03-cutout",
+      "task_type": "功能优化",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "功能优化观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "03-lambert",
+      "task_type": "功能优化",
+      "capability_family": "定向Lambert照明",
+      "subject": "lambert",
+      "state": "implemented",
+      "invariant": "世界法线和光方向共同决定线性辐亮度",
+      "observable": "功能优化观察面：定向Lambert照明的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "shade",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "03-resolve-color",
+      "task_type": "功能优化",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "功能优化观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "03-resolve-surface",
+      "task_type": "功能优化",
+      "capability_family": "最近子采样表面归约",
+      "subject": "resolve-surface",
+      "state": "implemented",
+      "invariant": "对象世界坐标法线与最近深度指向同一表面",
+      "observable": "功能优化观察面：最近子采样表面归约的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "03-crop",
+      "task_type": "功能优化",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "功能优化观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "03-compare-camera",
+      "task_type": "功能优化",
+      "capability_family": "成像语义兼容性",
+      "subject": "compare-camera",
+      "state": "implemented",
+      "invariant": "不同镜头尺寸采样不可直接量化为材质变化",
+      "observable": "功能优化观察面：成像语义兼容性的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "03-compare-node",
+      "task_type": "功能优化",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "功能优化观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "04-topology",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "依赖升级与迁移观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "04-authored-normal",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "依赖升级与迁移观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "04-srgb",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "依赖升级与迁移观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "04-hierarchy",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "依赖升级与迁移观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "04-normal-matrix",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "依赖升级与迁移观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "04-perspective",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "依赖升级与迁移观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "04-clip",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "依赖升级与迁移观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "04-interpolation",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "依赖升级与迁移观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "04-depth-tie",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "依赖升级与迁移观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "04-cutout",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "依赖升级与迁移观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "04-resolve-color",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "依赖升级与迁移观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "04-crop",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "依赖升级与迁移观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "04-compare-node",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "依赖升级与迁移观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "04-orbit",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "依赖升级与迁移观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "04-freeze",
+      "task_type": "依赖升级与迁移",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "依赖升级与迁移观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "05-topology",
+      "task_type": "质量保障",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "质量保障观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "05-authored-normal",
+      "task_type": "质量保障",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "质量保障观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "05-srgb",
+      "task_type": "质量保障",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "质量保障观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "05-hierarchy",
+      "task_type": "质量保障",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "质量保障观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "05-normal-matrix",
+      "task_type": "质量保障",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "质量保障观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "05-perspective",
+      "task_type": "质量保障",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "质量保障观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "05-clip",
+      "task_type": "质量保障",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "质量保障观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "05-interpolation",
+      "task_type": "质量保障",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "质量保障观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "05-depth-tie",
+      "task_type": "质量保障",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "质量保障观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "05-cutout",
+      "task_type": "质量保障",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "质量保障观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "05-resolve-color",
+      "task_type": "质量保障",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "质量保障观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "05-crop",
+      "task_type": "质量保障",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "质量保障观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "05-compare-node",
+      "task_type": "质量保障",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "质量保障观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "05-orbit",
+      "task_type": "质量保障",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "质量保障观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "05-freeze",
+      "task_type": "质量保障",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "质量保障观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "06-topology",
+      "task_type": "项目维护",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "项目维护观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "06-authored-normal",
+      "task_type": "项目维护",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "项目维护观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "06-srgb",
+      "task_type": "项目维护",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "项目维护观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "06-hierarchy",
+      "task_type": "项目维护",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "项目维护观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "06-normal-matrix",
+      "task_type": "项目维护",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "项目维护观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "06-perspective",
+      "task_type": "项目维护",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "项目维护观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "06-clip",
+      "task_type": "项目维护",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "项目维护观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "06-interpolation",
+      "task_type": "项目维护",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "项目维护观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "06-depth-tie",
+      "task_type": "项目维护",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "项目维护观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "06-cutout",
+      "task_type": "项目维护",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "项目维护观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "06-resolve-color",
+      "task_type": "项目维护",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "项目维护观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "06-crop",
+      "task_type": "项目维护",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "项目维护观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "06-compare-node",
+      "task_type": "项目维护",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "项目维护观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "06-orbit",
+      "task_type": "项目维护",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "项目维护观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "06-freeze",
+      "task_type": "项目维护",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "项目维护观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "07-topology",
+      "task_type": "技术讨论",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "技术讨论观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "07-authored-normal",
+      "task_type": "技术讨论",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "技术讨论观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "07-srgb",
+      "task_type": "技术讨论",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "技术讨论观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "07-hierarchy",
+      "task_type": "技术讨论",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "技术讨论观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "07-normal-matrix",
+      "task_type": "技术讨论",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "技术讨论观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "07-perspective",
+      "task_type": "技术讨论",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "技术讨论观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "07-clip",
+      "task_type": "技术讨论",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "技术讨论观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "07-interpolation",
+      "task_type": "技术讨论",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "技术讨论观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "07-depth-tie",
+      "task_type": "技术讨论",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "技术讨论观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "07-cutout",
+      "task_type": "技术讨论",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "技术讨论观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "07-resolve-color",
+      "task_type": "技术讨论",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "技术讨论观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "07-crop",
+      "task_type": "技术讨论",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "技术讨论观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "07-compare-node",
+      "task_type": "技术讨论",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "技术讨论观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "07-orbit",
+      "task_type": "技术讨论",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "技术讨论观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "07-freeze",
+      "task_type": "技术讨论",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "技术讨论观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "08-topology",
+      "task_type": "问题排查与诊断",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "问题排查与诊断观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "08-authored-normal",
+      "task_type": "问题排查与诊断",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "问题排查与诊断观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "08-srgb",
+      "task_type": "问题排查与诊断",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "问题排查与诊断观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "08-hierarchy",
+      "task_type": "问题排查与诊断",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "问题排查与诊断观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "08-normal-matrix",
+      "task_type": "问题排查与诊断",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "问题排查与诊断观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "08-perspective",
+      "task_type": "问题排查与诊断",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "问题排查与诊断观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "08-clip",
+      "task_type": "问题排查与诊断",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "问题排查与诊断观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "08-interpolation",
+      "task_type": "问题排查与诊断",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "问题排查与诊断观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "08-depth-tie",
+      "task_type": "问题排查与诊断",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "问题排查与诊断观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "08-cutout",
+      "task_type": "问题排查与诊断",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "问题排查与诊断观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "08-resolve-color",
+      "task_type": "问题排查与诊断",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "问题排查与诊断观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "08-crop",
+      "task_type": "问题排查与诊断",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "问题排查与诊断观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "08-compare-node",
+      "task_type": "问题排查与诊断",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "问题排查与诊断观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "08-orbit",
+      "task_type": "问题排查与诊断",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "问题排查与诊断观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "08-freeze",
+      "task_type": "问题排查与诊断",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "问题排查与诊断观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "09-topology",
+      "task_type": "部署运维",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "部署运维观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "09-authored-normal",
+      "task_type": "部署运维",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "部署运维观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "09-srgb",
+      "task_type": "部署运维",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "部署运维观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "09-hierarchy",
+      "task_type": "部署运维",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "部署运维观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "09-normal-matrix",
+      "task_type": "部署运维",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "部署运维观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "09-perspective",
+      "task_type": "部署运维",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "部署运维观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "09-clip",
+      "task_type": "部署运维",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "部署运维观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "09-interpolation",
+      "task_type": "部署运维",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "部署运维观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "09-depth-tie",
+      "task_type": "部署运维",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "部署运维观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "09-cutout",
+      "task_type": "部署运维",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "部署运维观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "09-resolve-color",
+      "task_type": "部署运维",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "部署运维观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "09-crop",
+      "task_type": "部署运维",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "部署运维观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "09-compare-node",
+      "task_type": "部署运维",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "部署运维观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "09-orbit",
+      "task_type": "部署运维",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "部署运维观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "09-freeze",
+      "task_type": "部署运维",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "部署运维观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    },
+    {
+      "id": "10-topology",
+      "task_type": "泛Agent需求",
+      "capability_family": "网格索引与退化面积",
+      "subject": "topology",
+      "state": "implemented",
+      "invariant": "有效拓扑才可进入片元管线",
+      "observable": "泛Agent需求观察面：网格索引与退化面积的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "10-authored-normal",
+      "task_type": "泛Agent需求",
+      "capability_family": "作者法线的归一化",
+      "subject": "authored-normal",
+      "state": "implemented",
+      "invariant": "显式法线不被生成法线覆盖",
+      "observable": "泛Agent需求观察面：作者法线的归一化的输入和结果在mesh-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "mesh-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/mesh.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/mesh.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "prepare_mesh",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "10-srgb",
+      "task_type": "泛Agent需求",
+      "capability_family": "纹理sRGB解码",
+      "subject": "srgb",
+      "state": "implemented",
+      "invariant": "颜色与线性照明在同一空间",
+      "observable": "泛Agent需求观察面：纹理sRGB解码的输入和结果在texture-ingest可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "texture-ingest"
+      ],
+      "source_anchors": [
+        "gnomon/texture.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/texture.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "texture_array",
+          "srgb_to_linear"
+        ]
+      }
+    },
+    {
+      "id": "10-hierarchy",
+      "task_type": "泛Agent需求",
+      "capability_family": "父子仿射坐标",
+      "subject": "hierarchy",
+      "state": "implemented",
+      "invariant": "子节点世界姿态遵循父节点变换",
+      "observable": "泛Agent需求观察面：父子仿射坐标的输入和结果在scene-revise可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-revise"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/scene.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/scene.py"
+        ],
+        "functions": [
+          "pose_matrix",
+          "compile_scene"
+        ]
+      }
+    },
+    {
+      "id": "10-normal-matrix",
+      "task_type": "泛Agent需求",
+      "capability_family": "非均匀缩放法线",
+      "subject": "normal-matrix",
+      "state": "implemented",
+      "invariant": "世界法线垂直于变换后的切面",
+      "observable": "泛Agent需求观察面：非均匀缩放法线的输入和结果在scene-preflight可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "scene-preflight"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "transform_normals",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "10-perspective",
+      "task_type": "泛Agent需求",
+      "capability_family": "垂直视角和宽高比",
+      "subject": "perspective",
+      "state": "implemented",
+      "invariant": "距离改变透视比例但不改变采样坐标约定",
+      "observable": "泛Agent需求观察面：垂直视角和宽高比的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/camera.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/camera.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "camera_matrices",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "10-clip",
+      "task_type": "泛Agent需求",
+      "capability_family": "六平面齐次裁剪",
+      "subject": "clip",
+      "state": "implemented",
+      "invariant": "越过近平面的表面不会反投到画面后方",
+      "observable": "泛Agent需求观察面：六平面齐次裁剪的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/clipping.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/clipping.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "clip_triangle",
+          "render_samples"
+        ]
+      }
+    },
+    {
+      "id": "10-interpolation",
+      "task_type": "泛Agent需求",
+      "capability_family": "透视校正属性",
+      "subject": "interpolation",
+      "state": "implemented",
+      "invariant": "倾斜表面的UV及世界坐标不使用错误屏幕线性权重",
+      "observable": "泛Agent需求观察面：透视校正属性的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/shading.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/shading.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "shade"
+        ]
+      }
+    },
+    {
+      "id": "10-depth-tie",
+      "task_type": "泛Agent需求",
+      "capability_family": "最近深度和平局",
+      "subject": "depth-tie",
+      "state": "implemented",
+      "invariant": "共面重叠的拾取遵守遍历次序",
+      "observable": "泛Agent需求观察面：最近深度和平局的输入和结果在pixel-inspect可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "pixel-inspect"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "raster_triangle",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "10-cutout",
+      "task_type": "泛Agent需求",
+      "capability_family": "材质透明裁切",
+      "subject": "cutout",
+      "state": "implemented",
+      "invariant": "被裁切的纹理样本不遮挡后方表面",
+      "observable": "泛Agent需求观察面：材质透明裁切的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/shading.py",
+        "gnomon/raster.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/shading.py",
+          "gnomon/raster.py"
+        ],
+        "functions": [
+          "shade",
+          "raster_triangle"
+        ]
+      }
+    },
+    {
+      "id": "10-resolve-color",
+      "task_type": "泛Agent需求",
+      "capability_family": "颜色超采样归约",
+      "subject": "resolve-color",
+      "state": "implemented",
+      "invariant": "含背景的采样平均在线性空间完成",
+      "observable": "泛Agent需求观察面：颜色超采样归约的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/channels.py",
+        "gnomon/color.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/channels.py",
+          "gnomon/color.py"
+        ],
+        "functions": [
+          "resolve_samples",
+          "encode_rgb"
+        ]
+      }
+    },
+    {
+      "id": "10-crop",
+      "task_type": "泛Agent需求",
+      "capability_family": "整图坐标区域成像",
+      "subject": "crop",
+      "state": "implemented",
+      "invariant": "区域渲染等于原镜头整图裁切",
+      "observable": "泛Agent需求观察面：整图坐标区域成像的输入和结果在still-render可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "still-render"
+      ],
+      "source_anchors": [
+        "gnomon/raster.py",
+        "gnomon/inspection.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/raster.py",
+          "gnomon/inspection.py"
+        ],
+        "functions": [
+          "render_samples",
+          "inspect_pixel"
+        ]
+      }
+    },
+    {
+      "id": "10-compare-node",
+      "task_type": "泛Agent需求",
+      "capability_family": "语义节点对比",
+      "subject": "compare-node",
+      "state": "implemented",
+      "invariant": "跨修订数值ID重排不产生伪节点差异",
+      "observable": "泛Agent需求观察面：语义节点对比的输入和结果在image-compare可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "image-compare"
+      ],
+      "source_anchors": [
+        "gnomon/scene.py",
+        "gnomon/comparison.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/scene.py",
+          "gnomon/comparison.py"
+        ],
+        "functions": [
+          "compile_scene",
+          "compare_frames"
+        ]
+      }
+    },
+    {
+      "id": "10-orbit",
+      "task_type": "泛Agent需求",
+      "capability_family": "目标中心多视角",
+      "subject": "orbit",
+      "state": "implemented",
+      "invariant": "每个视角保持相同目标和相机距离",
+      "observable": "泛Agent需求观察面：目标中心多视角的输入和结果在view-sheet可重现",
+      "primary_mechanism": "policy_rules",
+      "workflow_ids": [
+        "view-sheet"
+      ],
+      "source_anchors": [
+        "gnomon/math3d.py",
+        "gnomon/sheet.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/math3d.py",
+          "gnomon/sheet.py"
+        ],
+        "functions": [
+          "orbit_lens",
+          "build_sheet"
+        ]
+      }
+    },
+    {
+      "id": "10-freeze",
+      "task_type": "泛Agent需求",
+      "capability_family": "实际输入冻结",
+      "subject": "freeze",
+      "state": "implemented",
+      "invariant": "归档引用成像时实际资源内容和摘要",
+      "observable": "泛Agent需求观察面：实际输入冻结的输入和结果在render-bundle可重现",
+      "primary_mechanism": "snapshot_consistency",
+      "workflow_ids": [
+        "render-bundle"
+      ],
+      "source_anchors": [
+        "gnomon/service.py",
+        "gnomon/bundle.py"
+      ],
+      "existing_touch_points": {
+        "files": [
+          "gnomon/service.py",
+          "gnomon/bundle.py"
+        ],
+        "functions": [
+          "_snapshot",
+          "build_bundle"
+        ]
+      }
+    }
+  ]
+}

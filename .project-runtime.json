@@ -1,0 +1,53 @@
+{
+  "language": "Python",
+  "project_shape": "backend",
+  "source_extensions": [
+    ".py"
+  ],
+  "build_command": ".venv/bin/python -m compileall -q gnomon examples",
+  "testing": "deferred",
+  "workflow_checks": [
+    {
+      "workflow_id": "mesh-ingest",
+      "command": ".venv/bin/python -m gnomon.demo --flow mesh-ingest"
+    },
+    {
+      "workflow_id": "texture-ingest",
+      "command": ".venv/bin/python -m gnomon.demo --flow texture-ingest"
+    },
+    {
+      "workflow_id": "scene-revise",
+      "command": ".venv/bin/python -m gnomon.demo --flow scene-revise"
+    },
+    {
+      "workflow_id": "scene-preflight",
+      "command": ".venv/bin/python -m gnomon.demo --flow scene-preflight"
+    },
+    {
+      "workflow_id": "still-render",
+      "command": ".venv/bin/python -m gnomon.demo --flow still-render"
+    },
+    {
+      "workflow_id": "pixel-inspect",
+      "command": ".venv/bin/python -m gnomon.demo --flow pixel-inspect"
+    },
+    {
+      "workflow_id": "image-compare",
+      "command": ".venv/bin/python -m gnomon.demo --flow image-compare"
+    },
+    {
+      "workflow_id": "view-sheet",
+      "command": ".venv/bin/python -m gnomon.demo --flow view-sheet"
+    },
+    {
+      "workflow_id": "render-bundle",
+      "command": ".venv/bin/python -m gnomon.demo --flow render-bundle"
+    },
+    {
+      "workflow_id": "resource-retire",
+      "command": ".venv/bin/python -m gnomon.demo --flow resource-retire"
+    }
+  ],
+  "setup_command": "python3 -m venv .venv && .venv/bin/pip install -e '.[examples]'",
+  "run_command": ".venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --port 8737 --workers 1"
+}

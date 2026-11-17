@@ -1,0 +1,309 @@
+{
+  "name": "solo-0037-gnomon-render",
+  "project_shape": "backend",
+  "modules": [
+    {
+      "id": "catalog",
+      "path": "gnomon/catalog.py",
+      "responsibility": "记录与状态持久化"
+    },
+    {
+      "id": "mesh",
+      "path": "gnomon/mesh.py",
+      "responsibility": "三角网格验证及法线"
+    },
+    {
+      "id": "texture",
+      "path": "gnomon/texture.py",
+      "responsibility": "纹理解码和寻址"
+    },
+    {
+      "id": "color",
+      "path": "gnomon/color.py",
+      "responsibility": "色彩传递函数"
+    },
+    {
+      "id": "math3d",
+      "path": "gnomon/math3d.py",
+      "responsibility": "世界变换"
+    },
+    {
+      "id": "scene",
+      "path": "gnomon/scene.py",
+      "responsibility": "层级与绑定"
+    },
+    {
+      "id": "camera",
+      "path": "gnomon/camera.py",
+      "responsibility": "观察投影"
+    },
+    {
+      "id": "clipping",
+      "path": "gnomon/clipping.py",
+      "responsibility": "六平面裁剪"
+    },
+    {
+      "id": "raster",
+      "path": "gnomon/raster.py",
+      "responsibility": "样本覆盖与深度"
+    },
+    {
+      "id": "shading",
+      "path": "gnomon/shading.py",
+      "responsibility": "材质和光照"
+    },
+    {
+      "id": "channels",
+      "path": "gnomon/channels.py",
+      "responsibility": "通道归约与编码"
+    },
+    {
+      "id": "inspection",
+      "path": "gnomon/inspection.py",
+      "responsibility": "像素表面解释"
+    },
+    {
+      "id": "comparison",
+      "path": "gnomon/comparison.py",
+      "responsibility": "图像语义差异"
+    },
+    {
+      "id": "sheet",
+      "path": "gnomon/sheet.py",
+      "responsibility": "多镜头排版"
+    },
+    {
+      "id": "artifacts",
+      "path": "gnomon/artifacts.py",
+      "responsibility": "产物完整性"
+    },
+    {
+      "id": "bundle",
+      "path": "gnomon/bundle.py",
+      "responsibility": "自描述归档"
+    },
+    {
+      "id": "service",
+      "path": "gnomon/service.py",
+      "responsibility": "工作流组织"
+    },
+    {
+      "id": "api",
+      "path": "gnomon/api.py",
+      "responsibility": "HTTP资源入口"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "mesh-ingest",
+      "name": "网格接入",
+      "entry": "POST /v1/meshes",
+      "module_ids": [
+        "mesh",
+        "catalog",
+        "service",
+        "api"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "有效网格及面积法线",
+      "failure": "非法索引或零面积面拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow mesh-ingest"
+    },
+    {
+      "id": "texture-ingest",
+      "name": "纹理接入",
+      "entry": "POST /v1/textures",
+      "module_ids": [
+        "texture",
+        "color",
+        "catalog",
+        "api"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "RGBA与sRGB纹理可采样",
+      "failure": "错误PNG及缺失UV绑定拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow texture-ingest"
+    },
+    {
+      "id": "scene-revise",
+      "name": "场景修订",
+      "entry": "POST /v1/scenes/{id}/revisions",
+      "module_ids": [
+        "scene",
+        "math3d",
+        "catalog",
+        "camera",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "新独立修订保留血缘",
+      "failure": "父环和资源冲突拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow scene-revise"
+    },
+    {
+      "id": "scene-preflight",
+      "name": "成像预检",
+      "entry": "POST /v1/preflight",
+      "module_ids": [
+        "service",
+        "scene",
+        "camera",
+        "math3d",
+        "raster"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "世界范围及缓冲预算",
+      "failure": "超预算返回admissible=false",
+      "verification": ".venv/bin/python -m gnomon.demo --flow scene-preflight"
+    },
+    {
+      "id": "still-render",
+      "name": "静帧成像",
+      "entry": "POST /v1/renders",
+      "module_ids": [
+        "scene",
+        "camera",
+        "clipping",
+        "raster",
+        "shading",
+        "channels",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "多通道及区域等价像素",
+      "failure": "超预算失败无complete产物",
+      "verification": ".venv/bin/python -m gnomon.demo --flow still-render"
+    },
+    {
+      "id": "pixel-inspect",
+      "name": "表面拾取",
+      "entry": "GET /v1/renders/{id}/pixels/{x}/{y}",
+      "module_ids": [
+        "artifacts",
+        "channels",
+        "inspection",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "最近子采样节点世界坐标",
+      "failure": "越界像素拒绝背景为空表面",
+      "verification": ".venv/bin/python -m gnomon.demo --flow pixel-inspect"
+    },
+    {
+      "id": "image-compare",
+      "name": "成像对比",
+      "entry": "POST /v1/comparisons",
+      "module_ids": [
+        "comparison",
+        "artifacts",
+        "channels",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "颜色轮廓节点及深度差",
+      "failure": "镜头或输出规格不兼容拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow image-compare"
+    },
+    {
+      "id": "view-sheet",
+      "name": "多视角校样",
+      "entry": "POST /v1/sheets",
+      "module_ids": [
+        "sheet",
+        "math3d",
+        "scene",
+        "raster",
+        "channels",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "多视角图和镜头矩形索引",
+      "failure": "无效镜头失败无完整校样",
+      "verification": ".venv/bin/python -m gnomon.demo --flow view-sheet"
+    },
+    {
+      "id": "render-bundle",
+      "name": "成像包交付",
+      "entry": "POST /v1/renders/{id}/bundles",
+      "module_ids": [
+        "bundle",
+        "artifacts",
+        "catalog",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "有摘要和通道含义的ZIP",
+      "failure": "缺失或损坏通道拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow render-bundle"
+    },
+    {
+      "id": "resource-retire",
+      "name": "资源停用",
+      "entry": "POST /v1/resources/{id}/state/retired",
+      "module_ids": [
+        "catalog",
+        "scene",
+        "service",
+        "api"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "未来绑定禁止旧修订可成像",
+      "failure": "重复状态转换拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow resource-retire"
+    }
+  ],
+  "complexity": {
+    "mechanisms": [
+      "state_machine",
+      "resource_lifecycle",
+      "error_propagation",
+      "versioning_audit",
+      "export_freeze",
+      "policy_rules",
+      "lineage",
+      "snapshot_consistency",
+      "capacity",
+      "ranking_reorder"
+    ]
+  }
+}
