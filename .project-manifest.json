@@ -13,6 +13,11 @@
       "responsibility": "三角网格验证及法线"
     },
     {
+      "id": "objimport",
+      "path": "gnomon/objimport.py",
+      "responsibility": "OBJ/MTL解析与导入计划"
+    },
+    {
       "id": "texture",
       "path": "gnomon/texture.py",
       "responsibility": "纹理解码和寻址"
@@ -290,6 +295,28 @@
       "success": "未来绑定禁止旧修订可成像",
       "failure": "重复状态转换拒绝",
       "verification": ".venv/bin/python -m gnomon.demo --flow resource-retire"
+    },
+    {
+      "id": "obj-import",
+      "name": "OBJ模型导入",
+      "entry": "POST /v1/imports",
+      "module_ids": [
+        "objimport",
+        "mesh",
+        "texture",
+        "scene",
+        "catalog",
+        "service",
+        "api"
+      ],
+      "steps": [
+        "解析OBJ/MTL并诊断不可表示材质与缺失资源",
+        "耳切三角化并按独立索引拆分接缝顶点",
+        "创建可追溯的网格纹理场景与导入记录"
+      ],
+      "success": "坐标面朝向贴图经样本成像验证",
+      "failure": "越界索引混合UV或超预算拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow obj-import"
     }
   ],
   "complexity": {

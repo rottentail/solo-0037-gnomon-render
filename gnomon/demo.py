@@ -5,11 +5,11 @@ import tempfile
 from copy import deepcopy
 from pathlib import Path
 from .service import RendererService
-from .samples import wedge_mesh,screen_mesh,checker_texture,compose_scene
+from .samples import wedge_mesh,screen_mesh,checker_texture,compose_scene,obj_proof_sample,obj_flawed_sample
 from .errors import RenderError,require
 from .channels import unpack_channels
 
-FLOWS = ["mesh-ingest","texture-ingest","scene-revise","scene-preflight","still-render","pixel-inspect","image-compare","view-sheet","render-bundle","resource-retire"]
+FLOWS = ["mesh-ingest","texture-ingest","scene-revise","scene-preflight","still-render","pixel-inspect","image-compare","view-sheet","render-bundle","resource-retire","obj-import"]
 
 
 def expect_rejection(operation,code):
@@ -86,6 +86,65 @@ def walkthrough(root,flow="all",output=None):
             renderer.scene_state(scene["id"],"archived")
             expect_rejection(lambda:renderer.render(request),"scene_archived")
             renderer.scene_state(scene["id"],"active")
+        if flow in {"all","obj-import"}:
+            import numpy as np
+            sample = obj_proof_sample()
+            preview = renderer.preview_import(sample)
+            require(not any(item["severity"]=="warning" for item in preview["diagnostics"]),
+                    "walkthrough_result","proof sample must preview without warnings")
+            imported = renderer.import_model(sample)
+            details = imported["details"]
+            proof = renderer.render({"scene":details["scene"]["id"],"width":160,"height":100,"samples":1})
+            metadata = proof["details"]["metadata"]
+            view = np.asarray(metadata["view"]); projection = np.asarray(metadata["projection"])
+            def probe(point):
+                clip = projection @ view @ np.array([*point,1.0])
+                ndc = clip[:3]/clip[3]
+                return renderer.inspect(proof["id"],int((ndc[0]+1)/2*160),int((1-ndc[1])/2*100))
+            dart = probe([-1.0,-0.2,0])
+            require(dart["node"]=="dart-matte_red","walkthrough_result",f"dart node mismatch: {dart['node']}")
+            require(abs(dart["world"][0]+1.0)<0.03 and abs(dart["world"][1]+0.2)<0.03 and abs(dart["world"][2])<1e-9,
+                    "walkthrough_result",f"dart world coordinates drifted: {dart['world']}")
+            require(np.allclose(dart["normal"],[0,0,1],atol=1e-6),"walkthrough_result","CCW dart must face +Z")
+            notch = probe([-1.35,0.35,0])
+            require(notch["object_id"]==0,"walkthrough_result","concave notch must stay background (fan triangulation would cover it)")
+            winder = probe([0,0.9,0])
+            require(np.allclose(winder["normal"],[0,0,-1],atol=1e-6),"walkthrough_result","clockwise winding must keep its -Z normal")
+            flat = probe([-0.275,0,0]); tilted = probe([0.275,0,0])
+            require(np.allclose(flat["normal"],[0,0,1],atol=1e-6),"walkthrough_result","explicit flat normal lost")
+            require(np.allclose(tilted["normal"],[0.7071,0,0.7071],atol=1e-3),"walkthrough_result","independent vn indices not honored")
+            red,blue = [0.5776,0.0113,0.0113],[0.0113,0.0113,0.5776]
+            for point,expected in [([0.825,0,0],red),([1.075,0,0],blue),([1.325,0,0],red),([1.575,0,0],blue)]:
+                got = probe(point)
+                require(got["node"]=="seams-striped" and np.allclose(got["linear_rgb"],expected,atol=0.03),
+                        "walkthrough_result",f"UV seam sampling wrong at {point}: {got['linear_rgb']}")
+            meshes = details["meshes"]
+            require(len(meshes)==5,"walkthrough_result","expected five group/material meshes")
+            for entry in meshes.values():
+                renderer.catalog.get(entry["id"],"mesh")
+            bound = {node.get("mesh") for node in renderer.catalog.get(details["scene"]["id"],"scene")["payload"]["nodes"]} - {None}
+            require(bound == {entry["id"] for entry in meshes.values()},"walkthrough_result","scene must bind the imported mesh records")
+            texture_ids = {entry["id"] for entry in details["textures"].values()}
+            require(len(texture_ids)==1 and all(renderer.catalog.get(identity,"texture") for identity in texture_ids),
+                    "walkthrough_result","imported texture record missing")
+            flawed = renderer.preview_import(obj_flawed_sample())
+            codes = {item["code"] for item in flawed["diagnostics"]}
+            require({"mtl_transparency","mtl_unsupported","mtl_missing_texture"} <= codes,
+                    "walkthrough_result",f"flawed material diagnostics incomplete: {sorted(codes)}")
+            committed = renderer.import_model(obj_flawed_sample())
+            require(committed["state"]=="complete" and committed["details"]["diagnostics"],
+                    "walkthrough_result","flawed import must commit with recorded diagnostics")
+            no_library = renderer.preview_import({**sample,"mtl_text":None,"images":{}})
+            require("obj_mtllib_unprovided" in {item["code"] for item in no_library["diagnostics"]},
+                    "walkthrough_result","missing material library must be explained")
+            results["obj-import"] = {"meshes":len(meshes),"triangles":details["plan"]["stats"]["triangles"],
+                                     "vertices_out":details["plan"]["stats"]["vertices_out"],
+                                     "positions_in":details["plan"]["stats"]["positions_in"],
+                                     "diagnostics":sorted(codes),
+                                     "rejections":[
+                                         expect_rejection(lambda:renderer.preview_import({"label":"坏索引","obj_text":"v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 9\n"}),"obj_index"),
+                                         expect_rejection(lambda:renderer.preview_import({"label":"缺角","obj_text":"v 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2\n"}),"obj_face"),
+                                         expect_rejection(lambda:renderer.preview_import({"label":"半UV","obj_text":"v 0 0 0\nv 1 0 0\nv 0 1 0\nvt 0 0\nf 1/1 2 3\n"}),"obj_uv_partial")]}
         if output:
             for name in rendered["details"]["artifacts"]:
                 Path(output,name).write_bytes(renderer.artifacts.read(rendered,name))

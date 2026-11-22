@@ -13,7 +13,8 @@ from .comparison import compare_frames
 from .sheet import build_sheet
 from .bundle import build_bundle
 from .errors import RenderError, require
-from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput
+from .objimport import build_import
+from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput, ImportInput
 
 
 class RendererService:
@@ -41,6 +42,42 @@ class RendererService:
                 self.catalog.get(predecessor,"scene")
             compiled = compile_scene(parsed,self.catalog.get)
             return self.catalog.create("scene",parsed,details={"predecessor":predecessor,**scene_summary(compiled)})
+
+    def preview_import(self,payload):
+        parsed = ImportInput.model_validate(payload).model_dump()
+        plan = build_import(parsed)
+        return {"diagnostics":plan["diagnostics"],"plan":plan["plan"],
+                "scene":plan["scene"],"mesh_bindings":plan["mesh_bindings"],
+                "texture_bindings":plan["texture_bindings"]}
+
+    def import_model(self,payload):
+        parsed = ImportInput.model_validate(payload).model_dump()
+        plan = build_import(parsed)
+        with self.operation_lock:
+            textures = {}
+            for entry in plan["texture_inputs"]:
+                record = self.add_texture(entry["input"])
+                textures[entry["input"]["label"]] = record
+            meshes = {}
+            for mesh_input, mesh_plan in zip(plan["mesh_inputs"],plan["plan"]["meshes"]):
+                record = self.add_mesh(mesh_input)
+                meshes[mesh_plan["node"]] = {"id":record["id"],"digest":record["digest"],
+                                             "label":mesh_plan["label"],"group":mesh_plan["group"],
+                                             "material":mesh_plan["material"]}
+            scene = plan["scene"]
+            for node in scene["nodes"]:
+                if node["key"] in meshes:
+                    node["mesh"] = meshes[node["key"]]["id"]
+                binding = plan["texture_bindings"].get(node["key"])
+                if binding:
+                    node["surface"]["texture"] = textures[binding]["id"]
+            scene_record = self.add_scene(scene)
+            details = {"scene":{"id":scene_record["id"],"digest":scene_record["digest"]},
+                       "meshes":meshes,
+                       "textures":{label:{"id":record["id"],"digest":record["digest"]}
+                                   for label,record in textures.items()},
+                       "diagnostics":plan["diagnostics"],"plan":plan["plan"]}
+            return self.catalog.create("import",parsed,"complete",details)
 
     def scene_state(self,identity,target):
         require(target in {"active","archived"},"scene_state","unknown scene state")

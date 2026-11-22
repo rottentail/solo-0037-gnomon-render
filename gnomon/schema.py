@@ -103,6 +103,31 @@ class SceneInput(StrictModel):
         return self
 
 
+class ImportInput(StrictModel):
+    label: str = Field(min_length=1, max_length=120)
+    obj_text: str = Field(min_length=1, max_length=4000000)
+    mtl_text: str | None = Field(default=None, max_length=1000000)
+    images: dict[str, str] = Field(default_factory=dict, max_length=16)
+    lens: Lens | None = None
+    light: Light | None = None
+    background: tuple[float, float, float] | None = None
+
+    @model_validator(mode="after")
+    def bounded_parts(self):
+        total = 0
+        for name, data in self.images.items():
+            if not name or len(name) > 256:
+                raise ValueError("image names must be 1..256 characters")
+            if len(data) > 6000000:
+                raise ValueError(f"image {name!r} exceeds the encoded texture limit")
+            total += len(data)
+        if total > 24000000:
+            raise ValueError("submitted images exceed the combined 24 MB request budget")
+        if self.background is not None and any(x < 0 or x > 1 for x in self.background):
+            raise ValueError("background must be sRGB in [0,1]")
+        return self
+
+
 class RenderInput(StrictModel):
     scene: str
     width: int = Field(default=256, ge=16, le=1024)
