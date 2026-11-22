@@ -63,9 +63,14 @@ class RendererService:
         require(scene["state"]=="active","scene_archived","scene is archived",409)
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
         region = parsed["region"] or [0,0,parsed["width"],parsed["height"]]
-        estimated = region[2]*region[3]*parsed["samples"]**2*128
+        from .raster import sample_buffer_bytes, MAX_TRANSLUCENT_LAYERS, LAYER_RECORD_BYTES, BUFFER_BUDGET
+        estimated = sample_buffer_bytes(region[2],region[3],parsed["samples"],compiled["has_translucent"])
         return {**scene_summary(compiled),"estimated_buffer_bytes":estimated,
-                "admissible":estimated<=160*1024*1024 and compiled["triangles"]<=60000,
+                "translucent":compiled["has_translucent"],
+                "translucent_layer_cap":MAX_TRANSLUCENT_LAYERS,
+                "layer_record_bytes":LAYER_RECORD_BYTES,
+                "buffer_budget_bytes":BUFFER_BUDGET,
+                "admissible":estimated<=BUFFER_BUDGET and compiled["triangles"]<=60000,
                 "region":region,"request":parsed}
 
     def _snapshot(self,scene):

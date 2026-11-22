@@ -1,4 +1,3 @@
-import math
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -39,6 +38,9 @@ class Surface(StrictModel):
     texture: str | None = None
     wrap: Literal["repeat", "clamp"] = "repeat"
     alpha_cutoff: float = Field(default=0.5, ge=0, le=1)
+    # alpha_cutoff stays a binary keep/discard test (texture holes).
+    # opacity is the only true translucency control: 1 is opaque, <1 blends.
+    opacity: float = Field(default=1.0, ge=0, le=1)
     unlit: bool = False
     double_sided: bool = True
 

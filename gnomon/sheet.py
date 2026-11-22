@@ -2,7 +2,6 @@ import math
 from io import BytesIO
 from PIL import Image, ImageDraw
 from .math3d import orbit_lens
-from .channels import png_bytes
 
 
 def build_sheet(scene,angles,size,columns,render_view):

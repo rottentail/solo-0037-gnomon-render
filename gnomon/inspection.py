@@ -1,4 +1,3 @@
-import numpy as np
 from .errors import require
 
 
@@ -10,8 +9,27 @@ def inspect_pixel(channels,metadata,x,y):
     rx,ry,_,_ = metadata["region"]
     point = None if identity==0 else channels["world"][y,x].tolist()
     normal = None if identity==0 else channels["normal"][y,x].tolist()
+    node_map = metadata["node_map"]
+    through = []
+    layer_count = 0
+    if "through_ids" in channels:
+        layer_count = int(channels["layer_count"][y,x])
+        through = [node_map[str(int(value))]
+                   for value in channels["through_ids"][y,x] if int(value) > 0]
+    if identity == 0:
+        selection = "background: no covered subpixel"
+    elif through and node_map.get(str(identity)) in through:
+        selection = ("nearest translucent surface; no opaque surface behind it, "
+                     "ordered front layers are listed separately")
+    elif through:
+        selection = ("nearest opaque surface behind translucent front layers; "
+                     "front layers do not block selection")
+    else:
+        selection = "nearest covered subpixel"
     return {"pixel":[x,y],"full_sample":[float(rx+x+offset[0]),float(ry+y+offset[1])],
             "coverage":float(channels["coverage"][y,x]),"object_id":identity,
-            "node":metadata["node_map"].get(str(identity)),"world":point,"normal":normal,
+            "node":node_map.get(str(identity)),"world":point,"normal":normal,
             "ndc_depth":None if identity==0 else float(channels["depth"][y,x]),
-            "linear_rgb":channels["color"][y,x].tolist(),"selection":"nearest covered subpixel"}
+            "linear_rgb":channels["color"][y,x].tolist(),"selection":selection,
+            "translucent_layers_in_front":through,
+            "translucent_layer_count":layer_count}

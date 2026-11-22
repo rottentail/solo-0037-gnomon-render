@@ -53,8 +53,11 @@ def compile_scene(payload, resource_getter, allow_retired=False):
     camera_matrices(payload["lens"],1)
     unit(payload["light"]["toward"])
     bounds = world_bounds(np.concatenate(points)) if points else None
+    has_translucent = any(node["surface"].get("opacity",1.0) < 1.0
+                          for node in payload["nodes"] if node["mesh"] and visibility[node["key"]])
     return {"scene":deepcopy(payload),"objects":objects,"resources":resources,"bounds":bounds,
             "node_map":{str(obj["id"]):obj["key"] for obj in objects},
+            "has_translucent":has_translucent,
             "triangles":sum(len(obj["triangles"]) for obj in objects)}
 
 
