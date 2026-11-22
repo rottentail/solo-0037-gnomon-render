@@ -43,6 +43,11 @@
       "responsibility": "六平面裁剪"
     },
     {
+      "id": "section",
+      "path": "gnomon/section.py",
+      "responsibility": "世界平面剖切与封口归属"
+    },
+    {
       "id": "raster",
       "path": "gnomon/raster.py",
       "responsibility": "样本覆盖与深度"
@@ -193,6 +198,30 @@
       "success": "多通道及区域等价像素",
       "failure": "超预算失败无complete产物",
       "verification": ".venv/bin/python -m gnomon.demo --flow still-render"
+    },
+    {
+      "id": "section-render",
+      "name": "剖切截面成像",
+      "entry": "POST /v1/sections",
+      "module_ids": [
+        "section",
+        "scene",
+        "mesh",
+        "raster",
+        "channels",
+        "inspection",
+        "catalog",
+        "service",
+        "api"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "封闭网格封口独立着色无裂缝，开放网格标记不确定边界",
+      "failure": "零法线、缺失或重复剖切引用拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow section-render"
     },
     {
       "id": "pixel-inspect",

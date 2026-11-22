@@ -12,7 +12,7 @@ def resolve_samples(buffers,samples):
     closest = depth.argmin(axis=2)
     yy,xx = np.indices((h,w))
     resolved = {"color":color,"coverage":(buffers["object_id"]>0).reshape(h,samples,w,samples).mean(axis=(1,3))}
-    for key in ("depth","object_id","normal","world"):
+    for key in ("depth","object_id","section_id","normal","world"):
         source = buffers[key]
         if source.ndim == 2:
             arranged = source.reshape(h,samples,w,samples).transpose(0,2,1,3).reshape(h,w,-1)
@@ -39,11 +39,14 @@ def preview_channels(channels):
         grey[valid] = 0.25+0.75*(1-(depth[valid]-lo)/max(hi-lo,1e-12))
     identifiers = channels["object_id"]
     colors = np.stack([(identifiers*73)%255,(identifiers*151)%255,(identifiers*199)%255],axis=2).astype(np.uint8)
+    sections = channels["section_id"]
+    section_colors = np.stack([(sections*97)%255,(sections*57)%255,(sections*181)%255],axis=2).astype(np.uint8)
     normal = np.rint(np.clip(channels["normal"]*0.5+0.5,0,1)*255).astype(np.uint8)
     normal[~valid] = 0
     return {"color.png":png_bytes(encode_rgb(channels["color"])),
             "depth.png":png_bytes(np.rint(grey*255).astype(np.uint8)),
             "normal.png":png_bytes(normal),"object-id.png":png_bytes(colors),
+            "section-id.png":png_bytes(section_colors),
             "coverage.png":png_bytes(np.rint(channels["coverage"]*255).astype(np.uint8))}
 
 

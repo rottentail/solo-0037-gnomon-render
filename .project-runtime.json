@@ -28,6 +28,10 @@
       "command": ".venv/bin/python -m gnomon.demo --flow still-render"
     },
     {
+      "workflow_id": "section-render",
+      "command": ".venv/bin/python -m gnomon.demo --flow section-render"
+    },
+    {
       "workflow_id": "pixel-inspect",
       "command": ".venv/bin/python -m gnomon.demo --flow pixel-inspect"
     },

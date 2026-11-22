@@ -3,6 +3,7 @@ import numpy as np
 from .errors import require
 from .math3d import pose_matrix, transform_points, transform_normals, world_bounds, unit
 from .camera import camera_matrices
+from .section import apply_sections
 
 
 def compile_scene(payload, resource_getter, allow_retired=False):
@@ -50,15 +51,29 @@ def compile_scene(payload, resource_getter, allow_retired=False):
             objects.append({"id":index,"key":node["key"],"positions":world,"normals":normals,
                             "triangles":np.asarray(mesh["triangles"]),"uv":None if mesh["uv"] is None else np.asarray(mesh["uv"]),
                             "surface":node["surface"],"mirrored":np.linalg.det(matrices[node["key"]][:3,:3])<0})
+    requested = payload.get("sections",[])
+    require(len(set(requested)) == len(requested),"section_duplicate","scene lists a section more than once")
+    sections = [(index,identity,resource(identity,"section")) for index,identity in enumerate(requested,1)]
+    node_map = {str(obj["id"]):obj["key"] for obj in objects}
+    section_reports = []
+    if sections:
+        objects,section_reports = apply_sections(objects,sections)
     camera_matrices(payload["lens"],1)
     unit(payload["light"]["toward"])
     bounds = world_bounds(np.concatenate(points)) if points else None
     return {"scene":deepcopy(payload),"objects":objects,"resources":resources,"bounds":bounds,
-            "node_map":{str(obj["id"]):obj["key"] for obj in objects},
+            "node_map":node_map,
+            "section_map":{str(index):{"id":identity,"label":payload_["label"]} for index,identity,payload_ in sections},
+            "section_reports":section_reports,
             "triangles":sum(len(obj["triangles"]) for obj in objects)}
 
 
 def scene_summary(compiled):
     return {"bounds":compiled["bounds"],"visible_objects":len(compiled["objects"]),
             "triangles":compiled["triangles"],"node_map":compiled["node_map"],
+            "sections":[{"index":report["index"],"id":report["id"],"label":report["label"],
+                         "status":report["status"],
+                         "cap_triangles":sum(obj["cap_triangles"] for obj in report["objects"]),
+                         "open_chains":sum(len(obj["open_chains"]) for obj in report["objects"])}
+                        for report in compiled["section_reports"]],
             "resource_digests":{key:value["digest"] for key,value in compiled["resources"].items()}}

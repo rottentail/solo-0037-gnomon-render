@@ -5,6 +5,7 @@ from .catalog import Catalog, canonical
 from .artifacts import Artifacts
 from .mesh import prepare_mesh
 from .texture import decode_texture
+from .section import prepare_section
 from .scene import compile_scene, scene_summary
 from .raster import render_samples
 from .channels import resolve_samples, preview_channels, packed_channels, unpack_channels
@@ -13,7 +14,7 @@ from .comparison import compare_frames
 from .sheet import build_sheet
 from .bundle import build_bundle
 from .errors import RenderError, require
-from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput
+from .schema import MeshInput, TextureInput, SectionInput, SceneInput, RenderInput, CompareInput, SheetInput
 
 
 class RendererService:
@@ -34,6 +35,10 @@ class RendererService:
         parsed = TextureInput.model_validate(payload).model_dump()
         return self.catalog.create("texture",decode_texture(parsed))
 
+    def add_section(self,payload):
+        parsed = SectionInput.model_validate(payload).model_dump()
+        return self.catalog.create("section",prepare_section(parsed))
+
     def add_scene(self,payload,predecessor=None):
         parsed = SceneInput.model_validate(payload).model_dump()
         with self.operation_lock:
@@ -53,7 +58,7 @@ class RendererService:
         require(target in {"active","retired"},"resource_state","unknown resource state")
         with self.operation_lock:
             record = self.catalog.get(identity)
-            require(record["kind"] in {"mesh","texture"},"resource_kind","only mesh and texture can retire")
+            require(record["kind"] in {"mesh","texture","section"},"resource_kind","only mesh, texture and section can retire")
             expected = {"active"} if target=="retired" else {"retired"}
             return self.catalog.transition(identity,expected,target)
 
@@ -96,6 +101,7 @@ class RendererService:
                 channels = resolve_samples(buffers,parsed["samples"])
                 metadata.update({key:parsed[key] for key in ("width","height","samples")})
                 metadata.update(node_map=compiled["node_map"],scene_digest=scene["digest"],
+                                section_map=compiled["section_map"],sections=compiled["section_reports"],
                                 elapsed_seconds=time.perf_counter()-started)
                 files = preview_channels(channels)
                 files["channels.npz"] = packed_channels(channels)

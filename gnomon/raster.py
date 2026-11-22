@@ -11,14 +11,15 @@ def allocate(width,height,samples,background):
     shape = (height*samples,width*samples)
     return {"color":np.broadcast_to(srgb_to_linear(background),(*shape,3)).copy(),
             "depth":np.full(shape,np.inf),"normal":np.zeros((*shape,3)),
-            "object_id":np.zeros(shape,dtype=np.int32),"world":np.zeros((*shape,3))}
+            "object_id":np.zeros(shape,dtype=np.int32),"world":np.zeros((*shape,3)),
+            "section_id":np.zeros(shape,dtype=np.int32)}
 
 
 def edge(a,b,x,y):
     return (b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0])
 
 
-def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,region,samples):
+def raster_triangle(vertex,object_id,section_id,surface,texture,light,buffers,width,height,region,samples):
     clip = vertex[:,:4]
     if np.any(clip[:,3] <= 1e-12):
         return 0
@@ -69,6 +70,7 @@ def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,
         buffers["normal"][by,bx] = normals
         buffers["world"][by,bx] = attributes[:,:3]
         buffers["object_id"][by,bx] = object_id
+        buffers["section_id"][by,bx] = section_id
         count += len(bx)
     return count
 
@@ -84,7 +86,8 @@ def render_samples(compiled,request):
     view,projection = camera_matrices(scene["lens"],width/height)
     buffers = allocate(rw,rh,samples,scene["background"])
     textures = {key:texture_array(value["payload"]) for key,value in compiled["resources"].items() if value["kind"]=="texture"}
-    stats = {"input_triangles":compiled["triangles"],"clipped_triangles":0,"written_samples":0,"estimated_bytes":estimated}
+    stats = {"input_triangles":compiled["triangles"],"clipped_triangles":0,"written_samples":0,"estimated_bytes":estimated,
+             "section_cap_triangles":sum(len(obj["triangles"]) for obj in compiled["objects"] if obj.get("section",0)>0)}
     for obj in compiled["objects"]:
         positions = obj["positions"]
         homogeneous = np.column_stack([positions,np.ones(len(positions))])
@@ -95,5 +98,5 @@ def render_samples(compiled,request):
         for face in obj["triangles"]:
             for triangle in clip_triangle(packed[face]):
                 stats["clipped_triangles"] += 1
-                stats["written_samples"] += raster_triangle(triangle,obj["id"],obj["surface"],texture,scene["light"],buffers,width,height,region,samples)
+                stats["written_samples"] += raster_triangle(triangle,obj["id"],obj.get("section",0),obj["surface"],texture,scene["light"],buffers,width,height,region,samples)
     return buffers,{"view":view.tolist(),"projection":projection.tolist(),"region":list(region),"stats":stats}

@@ -24,9 +24,12 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 - 透视 fov 为垂直视角，正交 span 为垂直世界长度；near/far 为正距离。六个齐次平面裁剪后进行透视校正插值。
 - PNG 纹理按未附 ICC 的 sRGB 解码，UV 原点在左下，双线性采样。repeat/clamp 均可。alpha_cutoff 是二值裁切，不表示半透明混合。
 - 材质基色为 sRGB，着色和抗锯齿平均在线性空间，PNG 最后编码回 sRGB；超出显示范围的亮度仅在 PNG 截断，NPZ 保留。
+- 剖切对象是可保存资源：平面 `n·p = offset` 在世界空间定义，`keep` 选择保留 `below`（n·p ≤ offset）或 `above` 一侧，封口法线朝向被移除的半空间。场景按 `sections` 顺序依次应用多个剖切，封口继承前序剖切结果。
+- 封闭网格的切口生成封口三角形并独立着色（cap 颜色、unlit、double_sided 可配置）；封口与保留几何共享切点顶点，相邻面在切口交界处不产生裂缝。带孔截面按外环加内孔三角化。
+- 开放网格无法保证封口：未闭合的边界链不生成封口，在场景摘要、预检和渲染 metadata 中以 `open` 状态及世界坐标端点标出，与可交付的 `sealed` 截面区分。
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
-- samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景。
+- samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景；剖面标识为场景剖切序号，0 为原始表面。
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
 - 深度 NPZ 是 OpenGL NDC [-1,1]，背景为 +inf；depth.png 每张按自身有效深度范围做可读预览，不能当作物理距离或跨图绝对标尺。
 
@@ -36,11 +39,12 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 |---|---|
 | POST /v1/meshes | 三角索引、面积、法线、UV、包围盒校验，退化面拒绝 |
 | POST /v1/textures | PNG 解码、直通透明度、尺寸与格式约束 |
+| POST /v1/sections | 世界平面、保留侧与独立封口着色的可保存剖切对象 |
 | POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
-| POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
-| POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json |
-| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
+| POST /v1/preflight | 世界包围盒、可见三角数、剖切封口预览、预计帧缓冲与可受理判断 |
+| POST /v1/renders | 冻结场景和实际资源，生成六张 PNG、channels.npz、metadata.json |
+| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标与剖切归属，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
@@ -55,4 +59,4 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 ## 验证与测试边界
 
-`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十一条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。

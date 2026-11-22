@@ -58,6 +58,30 @@ class Node(StrictModel):
     visible: bool = True
 
 
+class CutPlane(StrictModel):
+    normal: tuple[float, float, float]
+    offset: float = 0.0
+    keep: Literal["below", "above"] = "below"
+
+
+class CapSurface(StrictModel):
+    color: tuple[float, float, float] = (0.85, 0.2, 0.25)
+    unlit: bool = False
+    double_sided: bool = True
+
+    @model_validator(mode="after")
+    def color_range(self):
+        if any(x < 0 or x > 1 for x in self.color):
+            raise ValueError("cap color must be sRGB in [0,1]")
+        return self
+
+
+class SectionInput(StrictModel):
+    label: str = Field(min_length=1, max_length=120)
+    plane: CutPlane
+    cap: CapSurface = Field(default_factory=CapSurface)
+
+
 class Lens(StrictModel):
     projection: Literal["perspective", "orthographic"] = "perspective"
     eye: tuple[float, float, float] = (3, 2, 4)
@@ -95,6 +119,7 @@ class SceneInput(StrictModel):
     lens: Lens = Field(default_factory=Lens)
     light: Light = Field(default_factory=Light)
     background: tuple[float, float, float] = (0.035, 0.045, 0.07)
+    sections: list[str] = Field(default_factory=list, max_length=8)
 
     @model_validator(mode="after")
     def background_range(self):

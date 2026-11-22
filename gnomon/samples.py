@@ -15,6 +15,23 @@ def screen_mesh():
             "triangles":[[0,1,2],[0,2,3]],"normals":[[0,0,1]]*4,"uv":[[0,0],[1,0],[1,1],[0,1]]}
 
 
+def tube_mesh():
+    # Closed hollow square column: outer square ±1, inner square ±0.5, y in [-1,1].
+    # A mid-height plane cut produces an annulus section (outer loop plus hole).
+    positions = [[-1,-1,-1],[1,-1,-1],[1,-1,1],[-1,-1,1],
+                 [-1,1,-1],[1,1,-1],[1,1,1],[-1,1,1],
+                 [-0.5,-1,-0.5],[0.5,-1,-0.5],[0.5,-1,0.5],[-0.5,-1,0.5],
+                 [-0.5,1,-0.5],[0.5,1,-0.5],[0.5,1,0.5],[-0.5,1,0.5]]
+    quads = [[0,4,5,1],[1,5,6,2],[2,6,7,3],[3,7,4,0],
+             [8,9,13,12],[9,10,14,13],[10,11,15,14],[11,8,12,15],
+             [4,12,13,5],[5,13,14,6],[6,14,15,7],[7,15,12,4],
+             [0,1,9,8],[1,2,10,9],[2,3,11,10],[3,0,8,11]]
+    triangles = []
+    for quad in quads:
+        triangles += [[quad[0],quad[1],quad[2]],[quad[0],quad[2],quad[3]]]
+    return {"label":"方管","positions":positions,"triangles":triangles}
+
+
 def checker_texture():
     image = Image.new("RGBA",(32,32))
     for y in range(32):

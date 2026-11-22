@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from . import __version__
 from .errors import RenderError
-from .schema import MeshInput,TextureInput,SceneInput,RenderInput,CompareInput,SheetInput
+from .schema import MeshInput,TextureInput,SectionInput,SceneInput,RenderInput,CompareInput,SheetInput
 from .service import RendererService
 
 
@@ -29,6 +29,9 @@ def create_app(root=None):
     @app.post("/v1/textures",status_code=201)
     def textures(payload:TextureInput,request:Request):
         return service(request).record_summary(service(request).add_texture(payload.model_dump()))
+    @app.post("/v1/sections",status_code=201)
+    def sections(payload:SectionInput,request:Request):
+        return service(request).record_summary(service(request).add_section(payload.model_dump()))
     @app.post("/v1/scenes",status_code=201)
     def scenes(payload:SceneInput,request:Request):
         return service(request).record_summary(service(request).add_scene(payload.model_dump()))
@@ -65,7 +68,7 @@ def create_app(root=None):
     @app.get("/v1/records")
     def list_records(kind:str,request:Request):
         from .errors import require
-        require(kind in {"mesh","texture","scene","render","comparison","sheet","bundle"},"record_kind","unknown record kind")
+        require(kind in {"mesh","texture","section","scene","render","comparison","sheet","bundle"},"record_kind","unknown record kind")
         return [service(request).record_summary(item) for item in service(request).catalog.list(kind)]
     @app.get("/v1/artifacts/{identity}/{name}")
     def artifact(identity:str,name:str,request:Request):
