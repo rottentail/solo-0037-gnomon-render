@@ -5,9 +5,10 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 
 def build_bundle(render,files):
+    focused = bool(render["details"].get("metadata",{}).get("focus"))
     manifest = {"format":"gnomon-render-bundle/1","render":render,
                 "files":{name:{"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)} for name,raw in files.items()},
-                "semantics":{"color":"linear RGB in NPZ; clamped sRGB in PNG",
+                "semantics":{"color":"linear RGB in NPZ (depth-of-field lens average); clamped sRGB in PNG" if focused else "linear RGB in NPZ; clamped sRGB in PNG",
                              "depth":"OpenGL NDC [-1,1], +inf for background",
                              "world":"nearest covered subpixel world position",
                              "coverage":"fraction of covered uniform samples",

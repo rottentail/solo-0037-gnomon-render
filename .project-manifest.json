@@ -38,6 +38,11 @@
       "responsibility": "观察投影"
     },
     {
+      "id": "focus",
+      "path": "gnomon/focus.py",
+      "responsibility": "光圈采样与清晰范围"
+    },
+    {
       "id": "clipping",
       "path": "gnomon/clipping.py",
       "responsibility": "六平面裁剪"
@@ -179,6 +184,7 @@
       "module_ids": [
         "scene",
         "camera",
+        "focus",
         "clipping",
         "raster",
         "shading",
@@ -193,6 +199,28 @@
       "success": "多通道及区域等价像素",
       "failure": "超预算失败无complete产物",
       "verification": ".venv/bin/python -m gnomon.demo --flow still-render"
+    },
+    {
+      "id": "focus-render",
+      "name": "景深成像",
+      "entry": "POST /v1/renders",
+      "module_ids": [
+        "focus",
+        "camera",
+        "raster",
+        "channels",
+        "inspection",
+        "comparison",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "清晰平面锐利且前后自然模糊，前景边缘合理显露远景，拾取保持针孔几何",
+      "failure": "光圈参数越界拒绝，景深设置不一致的比较拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow focus-render"
     },
     {
       "id": "pixel-inspect",

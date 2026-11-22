@@ -27,6 +27,8 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
 - samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景。
+- 可选 `focus={distance,f_stop,samples}` 请求景深。这不是图像空间模糊：渲染器在光圈圆盘上取 samples 个确定性样本（Vogel 圆盘，首个样本恒为圆心），每个样本偏移视点并重新对准 distance 处的清晰平面（垂直视线），独立成像后在线性空间平均颜色。视点偏移让前景与远景产生真实视差，前景细条边缘自然变为部分覆盖、露出后方景物，远景模糊也会延伸到锐利前景轮廓之后。depth/object_id/normal/world/coverage 始终来自零偏移的针孔通道，拾取不会把散开的颜色当成新几何面；inspect 响应以 color_source 标明颜色是否为镜头平均。
+- f_stop 是摄影光圈 f 值：透视按传感器高度 1 世界单位换算焦距（fov 推出）与光圈直径，正交按 span 换算。metadata 报告光圈直径、1 输出像素的容差和清晰范围 sharp_near/sharp_far（沿视线的世界距离，null 表示无穷远）。成像代价约为 samples 倍单通道渲染，preflight 以 lens_passes 报告；samples=1 或无 focus 时与针孔成像逐位一致。
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
 - 深度 NPZ 是 OpenGL NDC [-1,1]，背景为 +inf；depth.png 每张按自身有效深度范围做可读预览，不能当作物理距离或跨图绝对标尺。
 
@@ -39,7 +41,7 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
 | POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
-| POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json |
+| POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json；可选 focus 景深（仅平均颜色，几何通道保持针孔） |
 | GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
@@ -55,4 +57,6 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 ## 验证与测试边界
 
-`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十一条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+
+`examples/focus_showcase.py` 生成景深校样：同一静帧在针孔与三种清晰平面（近景细条、中景主体、远景细镂空纹理）下的对照图、边缘放大图和每组的清晰范围与采样耗时，默认写入 `run-output/focus-showcase/`。

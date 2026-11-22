@@ -7,6 +7,7 @@ from .mesh import prepare_mesh
 from .texture import decode_texture
 from .scene import compile_scene, scene_summary
 from .raster import render_samples
+from .focus import render_with_focus, focus_report
 from .channels import resolve_samples, preview_channels, packed_channels, unpack_channels
 from .inspection import inspect_pixel
 from .comparison import compare_frames
@@ -64,9 +65,10 @@ class RendererService:
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
         region = parsed["region"] or [0,0,parsed["width"],parsed["height"]]
         estimated = region[2]*region[3]*parsed["samples"]**2*128
+        focus = parsed.get("focus")
         return {**scene_summary(compiled),"estimated_buffer_bytes":estimated,
                 "admissible":estimated<=160*1024*1024 and compiled["triangles"]<=60000,
-                "region":region,"request":parsed}
+                "region":region,"lens_passes":focus["samples"] if focus else 1,"request":parsed}
 
     def _snapshot(self,scene):
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
@@ -92,7 +94,12 @@ class RendererService:
             record = self.catalog.transition(record["id"],{"queued"},"running")
             try:
                 started = time.perf_counter()
-                buffers,metadata = render_samples(compiled,parsed)
+                if parsed.get("focus"):
+                    buffers,metadata = render_with_focus(compiled,parsed)
+                    metadata["focus"] = focus_report(compiled["scene"]["lens"],parsed["focus"],parsed["height"])
+                else:
+                    buffers,metadata = render_samples(compiled,parsed)
+                    metadata["focus"] = None
                 channels = resolve_samples(buffers,parsed["samples"])
                 metadata.update({key:parsed[key] for key in ("width","height","samples")})
                 metadata.update(node_map=compiled["node_map"],scene_digest=scene["digest"],

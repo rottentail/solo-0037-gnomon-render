@@ -28,6 +28,10 @@
       "command": ".venv/bin/python -m gnomon.demo --flow still-render"
     },
     {
+      "workflow_id": "focus-render",
+      "command": ".venv/bin/python -m gnomon.demo --flow focus-render"
+    },
+    {
       "workflow_id": "pixel-inspect",
       "command": ".venv/bin/python -m gnomon.demo --flow pixel-inspect"
     },

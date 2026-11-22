@@ -103,12 +103,22 @@ class SceneInput(StrictModel):
         return self
 
 
+class Focus(StrictModel):
+    """景深请求：distance 为镜头到清晰平面的世界距离（垂直视线），
+    f_stop 为光圈 f 值（传感器高度按 1 世界单位计，正交按 span 计），
+    samples 为光圈采样数，成像代价约为其倍率。"""
+    distance: float = Field(gt=0, le=1e6)
+    f_stop: float = Field(ge=0.5, le=128)
+    samples: int = Field(default=16, ge=1, le=64)
+
+
 class RenderInput(StrictModel):
     scene: str
     width: int = Field(default=256, ge=16, le=1024)
     height: int = Field(default=256, ge=16, le=1024)
     samples: Literal[1, 2, 3] = 1
     region: tuple[int, int, int, int] | None = None
+    focus: Focus | None = None
 
     @model_validator(mode="after")
     def region_bounds(self):
