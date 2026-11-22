@@ -1,11 +1,14 @@
 import json
 import threading
 import time
+import numpy as np
 from .catalog import Catalog, canonical
 from .artifacts import Artifacts
 from .mesh import prepare_mesh
 from .texture import decode_texture
 from .scene import compile_scene, scene_summary
+from .camera import camera_matrices
+from .mirror import plan_reflections
 from .raster import render_samples
 from .channels import resolve_samples, preview_channels, packed_channels, unpack_channels
 from .inspection import inspect_pixel
@@ -64,9 +67,28 @@ class RendererService:
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
         region = parsed["region"] or [0,0,parsed["width"],parsed["height"]]
         estimated = region[2]*region[3]*parsed["samples"]**2*128
+        budget = parsed.get("reflection") or {}
+        scale = budget.get("resolution_scale",1.0)
+        reflection_mirrors,reflection_bytes = [],0
+        if budget.get("enabled",True):
+            view,projection = camera_matrices(compiled["scene"]["lens"],parsed["width"]/parsed["height"])
+            plans = plan_reflections(compiled["objects"],np.asarray(compiled["scene"]["lens"]["eye"],dtype=np.float64),
+                                     view,projection,parsed["width"],parsed["height"],scale,region)
+            for obj in compiled["objects"]:
+                plan = plans.get(obj["id"])
+                if plan is None:
+                    continue
+                _,_,pw,ph = plan["region"]
+                buffer_bytes = pw*ph*128
+                reflection_bytes += buffer_bytes
+                reflection_mirrors.append({"node":obj["key"],"region":plan["region"],
+                                           "resolution":[plan["width"],plan["height"]],"estimated_bytes":buffer_bytes})
+        admissible = (estimated<=160*1024*1024 and compiled["triangles"]<=60000
+                      and all(mirror["estimated_bytes"]<=160*1024*1024 for mirror in reflection_mirrors))
         return {**scene_summary(compiled),"estimated_buffer_bytes":estimated,
-                "admissible":estimated<=160*1024*1024 and compiled["triangles"]<=60000,
-                "region":region,"request":parsed}
+                "reflection":{"enabled":budget.get("enabled",True),"resolution_scale":scale,
+                              "mirrors":reflection_mirrors,"estimated_bytes":reflection_bytes},
+                "admissible":admissible,"region":region,"request":parsed}
 
     def _snapshot(self,scene):
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)

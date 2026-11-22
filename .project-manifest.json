@@ -38,6 +38,11 @@
       "responsibility": "观察投影"
     },
     {
+      "id": "mirror",
+      "path": "gnomon/mirror.py",
+      "responsibility": "平面镜反射与投影采样"
+    },
+    {
       "id": "clipping",
       "path": "gnomon/clipping.py",
       "responsibility": "六平面裁剪"
@@ -161,6 +166,7 @@
         "scene",
         "camera",
         "math3d",
+        "mirror",
         "raster"
       ],
       "steps": [
@@ -179,6 +185,7 @@
       "module_ids": [
         "scene",
         "camera",
+        "mirror",
         "clipping",
         "raster",
         "shading",

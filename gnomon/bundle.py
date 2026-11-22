@@ -12,7 +12,9 @@ def build_bundle(render,files):
                              "world":"nearest covered subpixel world position",
                              "coverage":"fraction of covered uniform samples",
                              "normal":"world-space unit normal at nearest sample",
-                             "object_id":"scene node index, 0 background"}}
+                             "object_id":"scene node index, 0 background",
+                             "reflection_id":"mirror pixels only: node index seen in the reflection, 0 none",
+                             "reflection_world":"mirror pixels only: world position of the reflected surface"}}
     output = BytesIO()
     with ZipFile(output,"w",ZIP_DEFLATED) as archive:
         for name,raw in sorted(files.items()):

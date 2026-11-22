@@ -12,7 +12,9 @@ def resolve_samples(buffers,samples):
     closest = depth.argmin(axis=2)
     yy,xx = np.indices((h,w))
     resolved = {"color":color,"coverage":(buffers["object_id"]>0).reshape(h,samples,w,samples).mean(axis=(1,3))}
-    for key in ("depth","object_id","normal","world"):
+    for key in ("depth","object_id","normal","world","reflection_id","reflection_world"):
+        if key not in buffers:
+            continue
         source = buffers[key]
         if source.ndim == 2:
             arranged = source.reshape(h,samples,w,samples).transpose(0,2,1,3).reshape(h,w,-1)

@@ -3,6 +3,7 @@ import numpy as np
 from .errors import require
 from .math3d import pose_matrix, transform_points, transform_normals, world_bounds, unit
 from .camera import camera_matrices
+from .mirror import oriented_plane
 
 
 def compile_scene(payload, resource_getter, allow_retired=False):
@@ -27,6 +28,14 @@ def compile_scene(payload, resource_getter, allow_retired=False):
         return matrix
     for key in nodes:
         visit(key)
+    for node in payload["nodes"]:
+        spec = node["surface"].get("mirror")
+        if spec is None:
+            continue
+        require(node["mesh"],"mirror_mesh","mirror surface requires a mesh")
+        for referenced in (spec["include"] or [])+spec["exclude"]:
+            require(referenced in nodes,"mirror_nodes","mirror include/exclude references unknown node")
+        require(node["key"] not in (spec["include"] or []),"mirror_nodes","mirror cannot include itself")
     resources, objects, points = {}, [], []
     def resource(identity, kind):
         if identity not in resources:
@@ -47,9 +56,15 @@ def compile_scene(payload, resource_getter, allow_retired=False):
         normals = transform_normals(mesh["normals"],matrices[node["key"]])
         if visibility[node["key"]]:
             points.append(world)
-            objects.append({"id":index,"key":node["key"],"positions":world,"normals":normals,
-                            "triangles":np.asarray(mesh["triangles"]),"uv":None if mesh["uv"] is None else np.asarray(mesh["uv"]),
-                            "surface":node["surface"],"mirrored":np.linalg.det(matrices[node["key"]][:3,:3])<0})
+            obj = {"id":index,"key":node["key"],"positions":world,"normals":normals,
+                   "triangles":np.asarray(mesh["triangles"]),"uv":None if mesh["uv"] is None else np.asarray(mesh["uv"]),
+                   "surface":node["surface"],"mirrored":np.linalg.det(matrices[node["key"]][:3,:3])<0}
+            spec = node["surface"].get("mirror")
+            if spec is not None:
+                normal,offset = oriented_plane(world,obj["triangles"],payload["lens"]["eye"])
+                obj["mirror"] = {"normal":normal,"offset":offset,"reflectance":spec["reflectance"],
+                                 "include":spec["include"],"exclude":spec["exclude"]}
+            objects.append(obj)
     camera_matrices(payload["lens"],1)
     unit(payload["light"]["toward"])
     bounds = world_bounds(np.concatenate(points)) if points else None
@@ -61,4 +76,5 @@ def compile_scene(payload, resource_getter, allow_retired=False):
 def scene_summary(compiled):
     return {"bounds":compiled["bounds"],"visible_objects":len(compiled["objects"]),
             "triangles":compiled["triangles"],"node_map":compiled["node_map"],
+            "mirrors":[obj["key"] for obj in compiled["objects"] if obj.get("mirror")],
             "resource_digests":{key:value["digest"] for key,value in compiled["resources"].items()}}

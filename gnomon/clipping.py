@@ -4,9 +4,9 @@ import numpy as np
 PLANES = np.array([[1,0,0,1],[-1,0,0,1],[0,1,0,1],[0,-1,0,1],[0,0,1,1],[0,0,-1,1]])
 
 
-def clip_triangle(vertices):
+def clip_triangle(vertices, planes=PLANES):
     polygon = list(vertices)
-    for plane in PLANES:
+    for plane in planes:
         if not polygon:
             return []
         clipped = []

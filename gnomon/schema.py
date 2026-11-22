@@ -34,6 +34,12 @@ class Transform(StrictModel):
         return self
 
 
+class Mirror(StrictModel):
+    reflectance: float = Field(default=1.0, ge=0, le=1)
+    include: list[str] | None = Field(default=None, max_length=100)
+    exclude: list[str] = Field(default_factory=list, max_length=100)
+
+
 class Surface(StrictModel):
     color: tuple[float, float, float] = (0.6, 0.6, 0.6)
     texture: str | None = None
@@ -41,6 +47,7 @@ class Surface(StrictModel):
     alpha_cutoff: float = Field(default=0.5, ge=0, le=1)
     unlit: bool = False
     double_sided: bool = True
+    mirror: Mirror | None = None
 
     @model_validator(mode="after")
     def color_range(self):
@@ -103,12 +110,18 @@ class SceneInput(StrictModel):
         return self
 
 
+class Reflection(StrictModel):
+    enabled: bool = True
+    resolution_scale: float = Field(default=1.0, gt=0, le=1)
+
+
 class RenderInput(StrictModel):
     scene: str
     width: int = Field(default=256, ge=16, le=1024)
     height: int = Field(default=256, ge=16, le=1024)
     samples: Literal[1, 2, 3] = 1
     region: tuple[int, int, int, int] | None = None
+    reflection: Reflection | None = None
 
     @model_validator(mode="after")
     def region_bounds(self):
