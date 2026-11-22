@@ -35,3 +35,15 @@ def compose_scene(mesh,screen,texture):
         {"key":"echo","mesh":mesh,"pose":{"translate":[1.0,-0.6,-0.8],"scale":[0.35,0.35,0.35]},"surface":{"color":[0.2,0.7,0.8]}}
     ],"lens":{"eye":[3,2.2,4],"target":[0,0,0],"near":0.1,"far":30},
     "light":{"toward":[1,3,4],"energy":0.85,"ambient":0.18}}
+
+
+def plate_pair_scene(mesh,gap,projection="orthographic"):
+    # A small plate hovering over a larger floor plate, seen straight from
+    # above: with a detail radius larger than `gap` the floor darkens around
+    # the hover footprint; with a gap beyond the radius the projection overlap
+    # must not read as contact.
+    return {"label":"贴合板遮蔽观测","nodes":[
+        {"key":"floor","mesh":mesh,"pose":{"scale":[1.4,1.4,1.4]},"surface":{"color":[0.75,0.72,0.7]}},
+        {"key":"hover","mesh":mesh,"pose":{"translate":[0,0,gap],"scale":[0.35,0.35,0.35]},"surface":{"color":[0.72,0.7,0.75]}}
+    ],"lens":{"projection":projection,"eye":[0,0,4],"target":[0,0,0],"near":1.0,"far":30,"span":3.2,"fov":45},
+    "light":{"toward":[1,2,4],"energy":0.7,"ambient":0.35}}

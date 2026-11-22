@@ -15,5 +15,10 @@ def shade(surface, normals, uv, texture, light):
     normals = np.divide(normals,length,out=np.zeros_like(normals),where=length>1e-12)
     if not surface["unlit"]:
         cosine = np.maximum(0,normals @ unit(light["toward"]))
+        # Ambient contribution is tracked separately so ambient occlusion can
+        # scale it after rasterization without touching the directional term.
+        ambient = base*light["ambient"]
         base *= (light["ambient"]+light["energy"]*cosine)[:,None]
-    return base,alpha>=surface["alpha_cutoff"],normals
+    else:
+        ambient = np.zeros_like(base)
+    return base,alpha>=surface["alpha_cutoff"],normals,ambient

@@ -1,6 +1,7 @@
 import json
 import threading
 import time
+import numpy as np
 from .catalog import Catalog, canonical
 from .artifacts import Artifacts
 from .mesh import prepare_mesh
@@ -8,6 +9,7 @@ from .texture import decode_texture
 from .scene import compile_scene, scene_summary
 from .raster import render_samples
 from .channels import resolve_samples, preview_channels, packed_channels, unpack_channels
+from .occlusion import occlusion_margin, expand_region, compute_occlusion
 from .inspection import inspect_pixel
 from .comparison import compare_frames
 from .sheet import build_sheet
@@ -63,10 +65,23 @@ class RendererService:
         require(scene["state"]=="active","scene_archived","scene is archived",409)
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
         region = parsed["region"] or [0,0,parsed["width"],parsed["height"]]
-        estimated = region[2]*region[3]*parsed["samples"]**2*128
+        effective = list(self._effective_region(scene["payload"],parsed,region))
+        estimated = effective[2]*effective[3]*parsed["samples"]**2*128
         return {**scene_summary(compiled),"estimated_buffer_bytes":estimated,
                 "admissible":estimated<=160*1024*1024 and compiled["triangles"]<=60000,
-                "region":region,"request":parsed}
+                "region":region,"effective_region":effective,"request":parsed}
+
+    @staticmethod
+    def _effective_region(scene_payload,parsed,region):
+        # Ambient occlusion reads neighbours up to one detail radius away, so
+        # the rendered region grows by a conservative margin and is cropped
+        # back afterwards; the result matches a full-frame render exactly.
+        occl = parsed["occlusion"]
+        if not occl:
+            return tuple(region)
+        bias = occl["bias"] if occl["bias"] is not None else 0.025*occl["radius"]
+        margin = occlusion_margin(scene_payload["lens"],parsed["width"],parsed["height"],occl["radius"],bias)
+        return expand_region(tuple(region),margin,parsed["width"],parsed["height"])
 
     def _snapshot(self,scene):
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
@@ -92,8 +107,29 @@ class RendererService:
             record = self.catalog.transition(record["id"],{"queued"},"running")
             try:
                 started = time.perf_counter()
-                buffers,metadata = render_samples(compiled,parsed)
-                channels = resolve_samples(buffers,parsed["samples"])
+                width,height,samples = parsed["width"],parsed["height"],parsed["samples"]
+                requested = tuple(parsed["region"]) if parsed["region"] else (0,0,width,height)
+                effective = self._effective_region(scene["payload"],parsed,requested)
+                render_request = parsed if effective==requested else {**parsed,"region":list(effective)}
+                buffers,metadata = render_samples(compiled,render_request)
+                channels = resolve_samples(buffers,samples)
+                if parsed["occlusion"]:
+                    visibility = compute_occlusion(channels["world"],channels["normal"],channels["object_id"]>0,
+                                                   np.asarray(metadata["view"]),np.asarray(metadata["projection"]),
+                                                   scene["payload"]["lens"]["projection"],width,height,effective[:2],
+                                                   parsed["occlusion"])
+                    # Occlusion scales only the ambient term; directional light,
+                    # unlit surfaces and the background keep their colour.
+                    ambient = channels.pop("ambient")
+                    channels["color"] = np.maximum(channels["color"]-ambient*(1-visibility)[:,:,None],0)
+                    channels["occlusion"] = visibility
+                    ox,oy = requested[0]-effective[0],requested[1]-effective[1]
+                    rw,rh = requested[2],requested[3]
+                    channels = {key:value[oy:oy+rh,ox:ox+rw] for key,value in channels.items()}
+                    metadata["region"] = list(requested)
+                else:
+                    channels["occlusion"] = np.ones((requested[3],requested[2]))
+                metadata["occlusion"] = parsed["occlusion"]
                 metadata.update({key:parsed[key] for key in ("width","height","samples")})
                 metadata.update(node_map=compiled["node_map"],scene_digest=scene["digest"],
                                 elapsed_seconds=time.perf_counter()-started)

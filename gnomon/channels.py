@@ -12,6 +12,8 @@ def resolve_samples(buffers,samples):
     closest = depth.argmin(axis=2)
     yy,xx = np.indices((h,w))
     resolved = {"color":color,"coverage":(buffers["object_id"]>0).reshape(h,samples,w,samples).mean(axis=(1,3))}
+    if "ambient" in buffers:
+        resolved["ambient"] = buffers["ambient"].reshape(h,samples,w,samples,3).mean(axis=(1,3))
     for key in ("depth","object_id","normal","world"):
         source = buffers[key]
         if source.ndim == 2:
@@ -41,10 +43,14 @@ def preview_channels(channels):
     colors = np.stack([(identifiers*73)%255,(identifiers*151)%255,(identifiers*199)%255],axis=2).astype(np.uint8)
     normal = np.rint(np.clip(channels["normal"]*0.5+0.5,0,1)*255).astype(np.uint8)
     normal[~valid] = 0
+    occlusion = channels.get("occlusion")
+    if occlusion is None:
+        occlusion = np.ones(depth.shape)
     return {"color.png":png_bytes(encode_rgb(channels["color"])),
             "depth.png":png_bytes(np.rint(grey*255).astype(np.uint8)),
             "normal.png":png_bytes(normal),"object-id.png":png_bytes(colors),
-            "coverage.png":png_bytes(np.rint(channels["coverage"]*255).astype(np.uint8))}
+            "coverage.png":png_bytes(np.rint(channels["coverage"]*255).astype(np.uint8)),
+            "occlusion.png":png_bytes(np.rint(np.clip(occlusion,0,1)*255).astype(np.uint8))}
 
 
 def packed_channels(channels):

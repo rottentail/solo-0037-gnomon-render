@@ -7,11 +7,14 @@ from .shading import shade
 from .errors import require
 
 
-def allocate(width,height,samples,background):
+def allocate(width,height,samples,background,with_ambient=False):
     shape = (height*samples,width*samples)
-    return {"color":np.broadcast_to(srgb_to_linear(background),(*shape,3)).copy(),
-            "depth":np.full(shape,np.inf),"normal":np.zeros((*shape,3)),
-            "object_id":np.zeros(shape,dtype=np.int32),"world":np.zeros((*shape,3))}
+    buffers = {"color":np.broadcast_to(srgb_to_linear(background),(*shape,3)).copy(),
+               "depth":np.full(shape,np.inf),"normal":np.zeros((*shape,3)),
+               "object_id":np.zeros(shape,dtype=np.int32),"world":np.zeros((*shape,3))}
+    if with_ambient:
+        buffers["ambient"] = np.zeros((*shape,3))
+    return buffers
 
 
 def edge(a,b,x,y):
@@ -62,13 +65,15 @@ def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,
         weights = bary/clip[:,3]
         weights /= weights.sum(axis=1,keepdims=True)
         attributes = weights @ vertex[:,4:]
-        rgb,keep,normals = shade(surface,attributes[:,3:6],attributes[:,6:8],texture,light)
-        bx,z,attributes,rgb,normals = bx[keep],z[keep],attributes[keep],rgb[keep],normals[keep]
+        rgb,keep,normals,ambient = shade(surface,attributes[:,3:6],attributes[:,6:8],texture,light)
+        bx,z,attributes,rgb,normals,ambient = bx[keep],z[keep],attributes[keep],rgb[keep],normals[keep],ambient[keep]
         buffers["depth"][by,bx] = z
         buffers["color"][by,bx] = rgb
         buffers["normal"][by,bx] = normals
         buffers["world"][by,bx] = attributes[:,:3]
         buffers["object_id"][by,bx] = object_id
+        if "ambient" in buffers:
+            buffers["ambient"][by,bx] = ambient
         count += len(bx)
     return count
 
@@ -82,7 +87,7 @@ def render_samples(compiled,request):
     require(compiled["triangles"] <= 60000,"triangle_budget","visible scene exceeds 60000 triangles")
     scene = compiled["scene"]
     view,projection = camera_matrices(scene["lens"],width/height)
-    buffers = allocate(rw,rh,samples,scene["background"])
+    buffers = allocate(rw,rh,samples,scene["background"],with_ambient=request.get("occlusion") is not None)
     textures = {key:texture_array(value["payload"]) for key,value in compiled["resources"].items() if value["kind"]=="texture"}
     stats = {"input_triangles":compiled["triangles"],"clipped_triangles":0,"written_samples":0,"estimated_bytes":estimated}
     for obj in compiled["objects"]:

@@ -12,6 +12,7 @@ def build_bundle(render,files):
                              "world":"nearest covered subpixel world position",
                              "coverage":"fraction of covered uniform samples",
                              "normal":"world-space unit normal at nearest sample",
+                             "occlusion":"ambient visibility in [0,1]; 1 open, 0 fully occluded; all ones when disabled",
                              "object_id":"scene node index, 0 background"}}
     output = BytesIO()
     with ZipFile(output,"w",ZIP_DEFLATED) as archive:

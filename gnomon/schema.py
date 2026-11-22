@@ -103,12 +103,20 @@ class SceneInput(StrictModel):
         return self
 
 
+class Occlusion(StrictModel):
+    radius: float = Field(gt=0, le=10000)
+    samples: int = Field(default=16, ge=4, le=64)
+    strength: float = Field(default=1.0, ge=0, le=1)
+    bias: float | None = Field(default=None, ge=0, le=10000)
+
+
 class RenderInput(StrictModel):
     scene: str
     width: int = Field(default=256, ge=16, le=1024)
     height: int = Field(default=256, ge=16, le=1024)
     samples: Literal[1, 2, 3] = 1
     region: tuple[int, int, int, int] | None = None
+    occlusion: Occlusion | None = None
 
     @model_validator(mode="after")
     def region_bounds(self):

@@ -5,7 +5,7 @@ import tempfile
 from copy import deepcopy
 from pathlib import Path
 from .service import RendererService
-from .samples import wedge_mesh,screen_mesh,checker_texture,compose_scene
+from .samples import wedge_mesh,screen_mesh,checker_texture,compose_scene,plate_pair_scene
 from .errors import RenderError,require
 from .channels import unpack_channels
 
@@ -52,7 +52,32 @@ def walkthrough(root,flow="all",output=None):
             cut = unpack_channels(renderer.artifacts.read(crop,"channels.npz"))
             import numpy as np
             require(np.array_equal(full["color"][12:52,16:64],cut["color"]),"crop_semantics","region differs from full frame")
-            results["still-render"] = {"state":rendered["state"],"stats":rendered["details"]["metadata"]["stats"],"region_matches":True}
+            occlusion_report = {}
+            for projection in ("orthographic","perspective"):
+                near_scene = renderer.add_scene(plate_pair_scene(screen["id"],0.12,projection))
+                far_scene = renderer.add_scene(plate_pair_scene(screen["id"],2.0,projection))
+                ao = {"radius":0.3,"samples":16,"strength":1.0}
+                def render_plates(scene,**extra):
+                    return renderer.render({"scene":scene["id"],"width":64,"height":64,"samples":1,**extra})
+                def channels_of(record):
+                    return unpack_channels(renderer.artifacts.read(record,"channels.npz"))
+                near_on = channels_of(render_plates(near_scene,occlusion=ao))
+                near_off = channels_of(render_plates(near_scene))
+                far_on = channels_of(render_plates(far_scene,occlusion=ao))
+                # Contact: a gap well inside the detail radius darkens the floor.
+                require(float(near_on["occlusion"].min())<0.8,"occlusion_contact","close plate must darken the floor")
+                # Projection overlap alone: a gap beyond the radius must not.
+                require(float(far_on["occlusion"].min())>0.98,"occlusion_range","distant overlap must not read as contact")
+                # The channel participates in shading through the ambient term.
+                require(float(near_on["color"].sum())<float(near_off["color"].sum()),"occlusion_shading","occlusion must darken the lit colour")
+                require(float(near_on["occlusion"].min())>=0 and float(near_on["occlusion"].max())<=1,"occlusion_range","visibility outside [0,1]")
+                if projection=="orthographic":
+                    region_on = channels_of(render_plates(near_scene,occlusion=ao,region=[12,12,40,40]))
+                    require(np.array_equal(near_on["occlusion"][12:52,12:52],region_on["occlusion"]),"crop_semantics","occlusion region differs from full frame")
+                    require(np.array_equal(near_on["color"][12:52,12:52],region_on["color"]),"crop_semantics","occluded colour region differs from full frame")
+                occlusion_report[projection] = {"contact_min_visibility":float(near_on["occlusion"].min()),
+                                                "distant_min_visibility":float(far_on["occlusion"].min())}
+            results["still-render"] = {"state":rendered["state"],"stats":rendered["details"]["metadata"]["stats"],"region_matches":True,"occlusion":occlusion_report}
         if flow in {"all","pixel-inspect"}:
             channels = unpack_channels(renderer.artifacts.read(rendered,"channels.npz"))
             import numpy as np

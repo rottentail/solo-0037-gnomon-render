@@ -53,6 +53,11 @@
       "responsibility": "材质和光照"
     },
     {
+      "id": "occlusion",
+      "path": "gnomon/occlusion.py",
+      "responsibility": "屏幕空间环境遮蔽"
+    },
+    {
       "id": "channels",
       "path": "gnomon/channels.py",
       "responsibility": "通道归约与编码"
@@ -182,6 +187,7 @@
         "clipping",
         "raster",
         "shading",
+        "occlusion",
         "channels",
         "service"
       ],
