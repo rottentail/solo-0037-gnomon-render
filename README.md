@@ -23,8 +23,12 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 - 右手世界坐标；Y 向上，相机看向 target。旋转单位为度，局部顺序为 X、Y、Z，随后由父节点变换进入世界空间。
 - 透视 fov 为垂直视角，正交 span 为垂直世界长度；near/far 为正距离。六个齐次平面裁剪后进行透视校正插值。
 - PNG 纹理按未附 ICC 的 sRGB 解码，UV 原点在左下，双线性采样。repeat/clamp 均可。alpha_cutoff 是二值裁切，不表示半透明混合。
+- 法线贴图单独登记：`POST /v1/textures` 的 `role:"normal"` 表示切空间法线图，RGB 即 xyz*0.5+0.5，不做 sRGB 解码，必须完全不透明；表面用 `normal_texture` 绑定，`normal_strength`（0–4，默认 1）只缩放切向分量。法线图不改变几何与深度，只扰动着色法线和 world-normal 通道。
+- 法线图的切空间由逐顶点 UV 导数按面积加权得到。UV 接缝应以重复位置、各自 UV 的顶点书写；两侧保留相反切向，不会被平均成一个错误朝向。镜像节点的 world bitangent 随镜像翻转，所以凹陷不会翻成凸起。非均匀缩放下切向按线性部分变换并与世界法线重新正交化。
+- 缺少 UV、UV 面积为零、无法构造切向，或把法线图放进颜色槽（反之亦然）都返回领域失败，而不是静默生成数据。
 - 材质基色为 sRGB，着色和抗锯齿平均在线性空间，PNG 最后编码回 sRGB；超出显示范围的亮度仅在 PNG 截断，NPZ 保留。
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
+- `normal.png` 与 NPZ 的 `normal` 通道是最近子采样上的世界空间单位法线，已包含法线贴图扰动；因此同一像素的颜色通道与 world-normal 通道描述同一表面：颜色 = 基色 × (ambient + energy·max(0, N·L))。samples>1 时颜色是子采样平均，法线取最近子采样，两者可能来自略微不同的位置。
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
 - samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景。
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
@@ -35,7 +39,7 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | 入口 | 结果与边界 |
 |---|---|
 | POST /v1/meshes | 三角索引、面积、法线、UV、包围盒校验，退化面拒绝 |
-| POST /v1/textures | PNG 解码、直通透明度、尺寸与格式约束 |
+| POST /v1/textures | PNG 解码、直通透明度、尺寸与格式约束；`role:"color"/"normal"` 区分颜色与切空间法线图 |
 | POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
 | POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
@@ -55,4 +59,4 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 ## 验证与测试边界
 
-`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流，另有 `--flow normal-material` 展示法线贴图：同一网格在不增加三角面的前提下呈现脊线，比较镜像、非均匀缩放、平直法线图与缺少 UV／退化 UV 的拒绝路径，并写出颜色通道与世界法线通道的对照图。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。

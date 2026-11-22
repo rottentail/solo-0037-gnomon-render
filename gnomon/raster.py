@@ -2,9 +2,14 @@ import numpy as np
 from .camera import camera_matrices
 from .clipping import clip_triangle
 from .color import srgb_to_linear
-from .texture import texture_array
+from .texture import texture_array, normal_array
 from .shading import shade
-from .errors import require
+from .errors import RenderError, require
+
+# Packed vertex layout: clip xyzw, world xyz, normal xyz, uv xy, then an
+# optional per-vertex tangent xyz and bitangent xyz for normal mapping.
+UV_OFFSET = 6
+FRAME_OFFSET = 8
 
 
 def allocate(width,height,samples,background):
@@ -18,10 +23,15 @@ def edge(a,b,x,y):
     return (b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0])
 
 
-def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,region,samples):
+def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,region,samples,normal_map=None):
     clip = vertex[:,:4]
     if np.any(clip[:,3] <= 1e-12):
         return 0
+    # Normal map frames are per-vertex attributes after the 4 clip + 8 surface
+    # columns; a normal-mapped surface without them is a pipeline error.
+    if normal_map is not None and vertex.shape[1] < 4+FRAME_OFFSET+6:
+        raise RenderError("normal_tangent",
+            "normal mapped surface requires per-vertex tangent and bitangent attributes")
     ndc = clip[:,:3]/clip[:,3,None]
     screen = np.column_stack([(ndc[:,0]+1)*width*samples/2,(1-ndc[:,1])*height*samples/2])
     signed_area = edge(screen[0],screen[1],screen[2,0],screen[2,1])
@@ -62,7 +72,13 @@ def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,
         weights = bary/clip[:,3]
         weights /= weights.sum(axis=1,keepdims=True)
         attributes = weights @ vertex[:,4:]
-        rgb,keep,normals = shade(surface,attributes[:,3:6],attributes[:,6:8],texture,light)
+        uv = attributes[:,UV_OFFSET:UV_OFFSET+2]
+        if normal_map is not None:
+            tangent = attributes[:,FRAME_OFFSET:FRAME_OFFSET+3]
+            bitangent = attributes[:,FRAME_OFFSET+3:FRAME_OFFSET+6]
+        else:
+            tangent = bitangent = None
+        rgb,keep,normals = shade(surface,attributes[:,3:6],uv,texture,light,tangent,bitangent,normal_map)
         bx,z,attributes,rgb,normals = bx[keep],z[keep],attributes[keep],rgb[keep],normals[keep]
         buffers["depth"][by,bx] = z
         buffers["color"][by,bx] = rgb
@@ -83,17 +99,32 @@ def render_samples(compiled,request):
     scene = compiled["scene"]
     view,projection = camera_matrices(scene["lens"],width/height)
     buffers = allocate(rw,rh,samples,scene["background"])
-    textures = {key:texture_array(value["payload"]) for key,value in compiled["resources"].items() if value["kind"]=="texture"}
-    stats = {"input_triangles":compiled["triangles"],"clipped_triangles":0,"written_samples":0,"estimated_bytes":estimated}
+    textures, normal_maps = {}, {}
+    for key,value in compiled["resources"].items():
+        if value["kind"] != "texture":
+            continue
+        if value["payload"].get("role","color") == "normal":
+            normal_maps[key] = normal_array(value["payload"])
+        else:
+            textures[key] = texture_array(value["payload"])
+    stats = {"input_triangles":compiled["triangles"],"clipped_triangles":0,"written_samples":0,
+             "normal_mapped_triangles":0,"estimated_bytes":estimated}
     for obj in compiled["objects"]:
         positions = obj["positions"]
         homogeneous = np.column_stack([positions,np.ones(len(positions))])
         clip = homogeneous @ (projection @ view).T
         uv = obj["uv"] if obj["uv"] is not None else np.zeros((len(positions),2))
-        packed = np.column_stack([clip,positions,obj["normals"],uv])
+        columns = [clip,positions,obj["normals"],uv]
+        if obj["tangent"] is not None:
+            columns += [obj["tangent"],obj["bitangent"]]
+        packed = np.column_stack(columns)
+        normal_map = normal_maps.get(obj["surface"]["normal_texture"])
         texture = textures.get(obj["surface"]["texture"])
         for face in obj["triangles"]:
+            if normal_map is not None:
+                stats["normal_mapped_triangles"] += 1
             for triangle in clip_triangle(packed[face]):
                 stats["clipped_triangles"] += 1
-                stats["written_samples"] += raster_triangle(triangle,obj["id"],obj["surface"],texture,scene["light"],buffers,width,height,region,samples)
+                stats["written_samples"] += raster_triangle(triangle,obj["id"],obj["surface"],texture,scene["light"],
+                                                           buffers,width,height,region,samples,normal_map)
     return buffers,{"view":view.tolist(),"projection":projection.tolist(),"region":list(region),"stats":stats}

@@ -19,18 +19,30 @@ def decode_texture(payload):
             pixels = np.asarray(image.convert("RGBA"))
     except (binascii.Error, UnidentifiedImageError, OSError, Image.DecompressionBombError) as exc:
         raise RenderError("texture_decode", str(exc)) from exc
+    role = payload.get("role","color")
+    if role == "normal":
+        # A tangent-space normal map is a vector image, not color: its RGB
+        # channels must survive byte-exact so dents never read as bumps.
+        require(bool(np.all(pixels[:,:,3] == 255)), "texture_normal_alpha",
+            "normal texture must be fully opaque so no channel is blended toward black")
     return {"label":payload["label"], "width":pixels.shape[1], "height":pixels.shape[0],
-            "rgba":pixels.tolist(), "encoding":"srgb", "alpha":"straight"}
+            "rgba":pixels.tolist(), "encoding":"srgb", "alpha":"straight", "role":role}
 
 
 def texture_array(texture):
+    """Diffuse RGBA texels: RGB decoded to linear light, alpha kept straight."""
     rgba = np.asarray(texture["rgba"], dtype=np.float64)/255
     rgba[:,:,:3] = srgb_to_linear(rgba[:,:,:3])
     return rgba
 
 
-def sample_texture(texture, uv, wrap):
-    height, width = texture.shape[:2]
+def normal_array(texture):
+    """Tangent-space normal vectors; RGB carries xyz, so no sRGB decode is applied."""
+    return np.asarray(texture["rgba"], dtype=np.float64)[:,:,:3]/255
+
+
+def sample_bilinear(data, uv, wrap):
+    height, width = data.shape[:2]
     coords = np.mod(uv,1) if wrap == "repeat" else np.clip(uv,0,1)
     # UV origin is bottom-left; PNG rows have top-left origin.
     x = coords[:,0] * width - 0.5
@@ -42,12 +54,20 @@ def sample_texture(texture, uv, wrap):
             ix, iy = ix % width, iy % height
         else:
             ix, iy = np.clip(ix,0,width-1), np.clip(iy,0,height-1)
-        return texture[iy,ix]
+        return data[iy,ix]
+    return ((1-fx)*(1-fy)*at(x0,y0) + fx*(1-fy)*at(x0+1,y0)
+            + (1-fx)*fy*at(x0,y0+1) + fx*fy*at(x0+1,y0+1))
+
+
+def sample_texture(texture, uv, wrap):
     # Interpolate premultiplied colors to avoid dark fringes in alpha-cut textures.
     prepared = texture.copy()
     prepared[:,:,:3] *= prepared[:,:,3:4]
-    texture = prepared
-    result = ((1-fx)*(1-fy)*at(x0,y0) + fx*(1-fy)*at(x0+1,y0)
-              + (1-fx)*fy*at(x0,y0+1) + fx*fy*at(x0+1,y0+1))
+    result = sample_bilinear(prepared, uv, wrap)
     result[:,:3] = np.divide(result[:,:3],result[:,3:4],out=np.zeros_like(result[:,:3]),where=result[:,3:4]>1e-12)
     return result
+
+
+def sample_normal(normal_map, uv, wrap):
+    # Tangent-space vectors interpolate linearly; RGB channels have no color transfer.
+    return sample_bilinear(normal_map, uv, wrap)*2-1

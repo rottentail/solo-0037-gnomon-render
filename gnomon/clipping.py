@@ -1,6 +1,7 @@
 import numpy as np
 
-# Clip the packed vertex [clip xyzw, world xyz, normal xyz, uv xy].
+# Clip the packed vertex [clip xyzw, world xyz, normal xyz, uv xy] and, for a
+# normal-mapped surface, the trailing tangent xyz and bitangent xyz columns.
 PLANES = np.array([[1,0,0,1],[-1,0,0,1],[0,1,0,1],[0,-1,0,1],[0,0,1,1],[0,0,-1,1]])
 
 

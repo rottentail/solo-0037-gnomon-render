@@ -32,6 +32,16 @@ def transform_normals(normals, matrix):
     return unit(np.asarray(normals) @ normal_matrix.T)
 
 
+def transform_directions(directions, matrix):
+    # Surface tangents are directions, not normals: they follow the linear part
+    # directly. Under non-uniform scale they then need re-orthogonalizing
+    # against the inverse-transpose normal by the caller.
+    vectors = np.asarray(directions) @ matrix[:3,:3].T
+    length = np.linalg.norm(vectors,axis=1,keepdims=True)
+    require(bool(np.all(length > 1e-12)), "zero_vector", "direction has zero length")
+    return vectors/length
+
+
 def world_bounds(points):
     return {"min": points.min(axis=0).tolist(), "max": points.max(axis=0).tolist()}
 

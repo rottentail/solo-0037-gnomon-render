@@ -10,12 +10,12 @@
     {
       "id": "mesh",
       "path": "gnomon/mesh.py",
-      "responsibility": "三角网格验证及法线"
+      "responsibility": "三角网格验证、法线与UV切线框"
     },
     {
       "id": "texture",
       "path": "gnomon/texture.py",
-      "responsibility": "纹理解码和寻址"
+      "responsibility": "纹理解码、角色与寻址"
     },
     {
       "id": "color",
@@ -30,7 +30,7 @@
     {
       "id": "scene",
       "path": "gnomon/scene.py",
-      "responsibility": "层级与绑定"
+      "responsibility": "层级、绑定与世界切线框"
     },
     {
       "id": "camera",
@@ -50,7 +50,7 @@
     {
       "id": "shading",
       "path": "gnomon/shading.py",
-      "responsibility": "材质和光照"
+      "responsibility": "材质光照与切空间法线扰动"
     },
     {
       "id": "channels",
@@ -193,6 +193,27 @@
       "success": "多通道及区域等价像素",
       "failure": "超预算失败无complete产物",
       "verification": ".venv/bin/python -m gnomon.demo --flow still-render"
+    },
+    {
+      "id": "normal-material",
+      "name": "法线材质校样",
+      "entry": "POST /v1/renders",
+      "module_ids": [
+        "mesh",
+        "scene",
+        "raster",
+        "shading",
+        "channels",
+        "service"
+      ],
+      "steps": [
+        "从逐顶点UV导数构造切空间并校验UV面积",
+        "按材质绑定解码切空间法线图并扰动着色法线",
+        "在颜色与世界法线通道中呈现同一表面并报告拒绝路径"
+      ],
+      "success": "无新增几何的凹凸与颜色/世界法线一致",
+      "failure": "缺少UV、退化UV或纹理角色错位被拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow normal-material"
     },
     {
       "id": "pixel-inspect",

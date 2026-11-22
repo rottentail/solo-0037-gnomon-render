@@ -1,6 +1,68 @@
 import numpy as np
-from .errors import require
+from .errors import RenderError, require
 from .math3d import world_bounds
+
+
+def vertex_frames(positions, normals, uv, triangles):
+    """Mesh-space tangent frames for a tangent-space normal map.
+
+    Returns (tangent, bitangent), each (V,3), orthonormal with the vertex
+    normal. Both vectors come from the triangle UV derivatives, weighted by
+    triangle area, so the frame follows the texture layout rather than the
+    geometry alone.
+
+    A UV seam is authored the way per-vertex UV attributes always require:
+    duplicate the ridge vertices so each chart owns its UV values. The two
+    copies then accumulate their own frames and the seam is rendered as a
+    crisp change of tangent direction. If a seam is instead expressed by
+    wrapping UVs across one shared vertex, the +u and -u contributions cancel
+    and no usable tangent exists; that is reported instead of silently
+    zeroing the normal.
+    """
+    faces = np.asarray(triangles, dtype=np.int64)
+    p, t = positions[faces], uv[faces]
+    d1, d2 = t[:,1]-t[:,0], t[:,2]-t[:,0]
+    det = d1[:,0]*d2[:,1]-d1[:,1]*d2[:,0]
+    scale = np.linalg.norm(d1,axis=1)*np.linalg.norm(d2,axis=1)
+    degenerate = np.abs(det) <= np.maximum(1e-15,1e-9*scale)
+    if np.any(degenerate):
+        listed = [int(i) for i in np.flatnonzero(degenerate)[:16]]
+        extra = int(degenerate.sum())-len(listed)
+        tail = "" if extra == 0 else f" (+{extra} more)"
+        raise RenderError("normal_tangent",
+            f"normal map requires a nonzero UV area on every face; faces with no usable tangent: {listed}{tail}")
+    e1, e2 = p[:,1]-p[:,0], p[:,2]-p[:,0]
+    face_tangent = (e1*d2[:,1:2]-e2*d1[:,1:2])/det[:,None]
+    face_bitangent = (e2*d1[:,0:1]-e1*d2[:,0:1])/det[:,None]
+    weight = 0.5*np.abs(det)
+    tangent_sum = np.zeros((len(positions),3))
+    bitangent_sum = np.zeros((len(positions),3))
+    for corner in range(3):
+        np.add.at(tangent_sum,faces[:,corner],face_tangent*weight[:,None])
+        np.add.at(bitangent_sum,faces[:,corner],face_bitangent*weight[:,None])
+    tangent = tangent_sum - normals*np.sum(normals*tangent_sum,axis=1,keepdims=True)
+    length = np.linalg.norm(tangent,axis=1)
+    broken = length <= 1e-10
+    if np.any(broken):
+        listed = [int(i) for i in np.flatnonzero(broken)[:16]]
+        extra = int(broken.sum())-len(listed)
+        tail = "" if extra == 0 else f" (+{extra} more)"
+        raise RenderError("normal_tangent",
+            f"normal map requires a tangent direction on every vertex; vertices without one: {listed}{tail} "
+            "(author a UV seam as duplicated vertices sharing one position)")
+    tangent /= length[:,None]
+    # Gram-Schmidt the bitangent against the tangent while keeping the sign of
+    # the UV v axis, which is what encodes the chart's handedness.
+    bitangent = bitangent_sum - normals*np.sum(normals*bitangent_sum,axis=1,keepdims=True)
+    bitangent -= tangent*np.sum(tangent*bitangent,axis=1,keepdims=True)
+    length = np.linalg.norm(bitangent,axis=1)
+    collapsed = length <= 1e-10
+    if np.any(collapsed):
+        # A chart that is degenerate along v still has a tangent-derived
+        # handedness; complete the frame around the vertex normal.
+        bitangent[collapsed] = np.cross(normals[collapsed],tangent[collapsed])
+        length[collapsed] = 1
+    return tangent, bitangent/length[:,None]
 
 
 def prepare_mesh(payload):

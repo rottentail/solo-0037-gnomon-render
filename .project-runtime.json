@@ -28,6 +28,10 @@
       "command": ".venv/bin/python -m gnomon.demo --flow still-render"
     },
     {
+      "workflow_id": "normal-material",
+      "command": ".venv/bin/python -m gnomon.demo --flow normal-material"
+    },
+    {
       "workflow_id": "pixel-inspect",
       "command": ".venv/bin/python -m gnomon.demo --flow pixel-inspect"
     },

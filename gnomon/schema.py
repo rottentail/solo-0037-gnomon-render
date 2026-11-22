@@ -18,6 +18,7 @@ class MeshInput(StrictModel):
 class TextureInput(StrictModel):
     label: str = Field(min_length=1, max_length=120)
     png_base64: str = Field(max_length=6000000)
+    role: Literal["color", "normal"] = "color"
 
 
 class Transform(StrictModel):
@@ -37,6 +38,8 @@ class Transform(StrictModel):
 class Surface(StrictModel):
     color: tuple[float, float, float] = (0.6, 0.6, 0.6)
     texture: str | None = None
+    normal_texture: str | None = None
+    normal_strength: float = Field(default=1, ge=0, le=4)
     wrap: Literal["repeat", "clamp"] = "repeat"
     alpha_cutoff: float = Field(default=0.5, ge=0, le=1)
     unlit: bool = False
