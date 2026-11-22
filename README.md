@@ -22,6 +22,9 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 - 右手世界坐标；Y 向上，相机看向 target。旋转单位为度，局部顺序为 X、Y、Z，随后由父节点变换进入世界空间。
 - 透视 fov 为垂直视角，正交 span 为垂直世界长度；near/far 为正距离。六个齐次平面裁剪后进行透视校正插值。
+- `equirectangular` 镜头输出真正的 360×180 经纬展开图（不是拉伸的透视图）：每个均匀子采样对应一条世界光线并做射线-三角形求交。宽必须为高的两倍且不接受 region；列首列尾是同一条 ±180° 接缝，首末行分别指向正上/正下极区，接缝与极区在世界空间直接采样，无三角形跨缝分裂。
+- 全景深度是镜头 eye 到命中点的光线距离（世界单位，背景 +inf），不是 OpenGL NDC；channels.npz 另存每像素单位世界光线 `ray`，拾取返回 `ray_direction`、`distance`、`yaw_degrees`、`pitch_degrees`，满足 `eye + distance·ray = world`。全景请求按光线数预算（上限 4,194,304 条光线），与平面帧缓冲预算分别核算。
+- 经纬角约定：`yaw=atan2(ray.x,-ray.z)`，中心列 yaw=0 沿镜头 forward，首列 yaw=-180、末列趋近 +180；`pitch=asin(ray.y)`，首行 +90、末行 -90。
 - PNG 纹理按未附 ICC 的 sRGB 解码，UV 原点在左下，双线性采样。repeat/clamp 均可。alpha_cutoff 是二值裁切，不表示半透明混合。
 - 材质基色为 sRGB，着色和抗锯齿平均在线性空间，PNG 最后编码回 sRGB；超出显示范围的亮度仅在 PNG 截断，NPZ 保留。
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
@@ -39,9 +42,9 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
 | POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
-| POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json |
-| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
-| POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
+| POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json；经纬镜头生成含 ray 通道的 2:1 全景 |
+| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面；全景另返回光线方向、经纬角与光线距离 |
+| POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度；平面与经纬镜头语义不相容会被拒绝 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
 | POST /v1/resources/{id}/state/retired | 拒绝新场景绑定，旧场景继续引用；active 可恢复 |
@@ -49,7 +52,7 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 ## 环境和资源边界
 
-每个网格最多 20,000 顶点 / 30,000 三角，场景最多 100 节点 / 60,000 可见三角。纹理最多 1024×1024，编码 PNG 最多 4 MB。成像边长 16–1024，保守估算采样缓冲不超过 160 MiB；这不是整个 Python 进程的内存限制，解码资源、JSON、数组临时副本和归档还需要内存。静帧没有阴影、透射、骨骼、动画或外部模型格式导入。
+每个网格最多 20,000 顶点 / 30,000 三角，场景最多 100 节点 / 60,000 可见三角。纹理最多 1024×1024，编码 PNG 最多 4 MB。成像边长 16–1024，保守估算采样缓冲不超过 160 MiB；这不是整个 Python 进程的内存限制，解码资源、JSON、数组临时副本和归档还需要内存。经纬环视另有光线数预算 4,194,304 条（宽×高×samples²），射线按 65,536 条分块求交以限定临时数组。静帧没有阴影、透射、骨骼、动画或外部模型格式导入。
 
 `.gnomon-data/gnomon.sqlite3` 保存记录，artifacts/ 保存校验摘要的结果。运行产物不进入 Git。应使用同一目录和单个 worker；不承诺跨进程互斥或分布式执行。HTTP 是可信环境中的成像接口，不含身份系统；不要直接暴露到公共网络。
 

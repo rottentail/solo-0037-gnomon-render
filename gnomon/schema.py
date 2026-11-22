@@ -59,7 +59,7 @@ class Node(StrictModel):
 
 
 class Lens(StrictModel):
-    projection: Literal["perspective", "orthographic"] = "perspective"
+    projection: Literal["perspective", "orthographic", "equirectangular"] = "perspective"
     eye: tuple[float, float, float] = (3, 2, 4)
     target: tuple[float, float, float] = (0, 0, 0)
     up: tuple[float, float, float] = (0, 1, 0)
@@ -74,6 +74,11 @@ class Lens(StrictModel):
             raise ValueError("camera coordinates outside supported range")
         if self.far <= self.near:
             raise ValueError("far must exceed near")
+        if self.projection == "equirectangular":
+            if self.eye == self.target:
+                raise ValueError("equirectangular lens requires distinct eye and target")
+            if all(abs(v) < 1e-12 for v in self.up):
+                raise ValueError("equirectangular lens requires a nonzero up vector")
         return self
 
 

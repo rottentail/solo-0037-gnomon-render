@@ -6,6 +6,8 @@ from .channels import png_bytes
 def compare_frames(left,right,left_meta,right_meta,threshold):
     for key in ("view","projection","region","width","height","samples"):
         require(left_meta[key]==right_meta[key],"comparison_camera",f"comparison requires matching {key}",409)
+    require(left_meta.get("lens_projection")==right_meta.get("lens_projection"),
+            "comparison_camera","comparison requires matching lens projection",409)
     require(left["color"].shape==right["color"].shape,"comparison_shape","output shapes differ",409)
     delta = np.abs(left["color"]-right["color"])
     magnitude = delta.max(axis=2)

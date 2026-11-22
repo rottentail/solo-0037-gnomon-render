@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 from .errors import require
 from .math3d import pose_matrix, transform_points, transform_normals, world_bounds, unit
-from .camera import camera_matrices
+from .camera import lens_axes
 
 
 def compile_scene(payload, resource_getter, allow_retired=False):
@@ -50,7 +50,7 @@ def compile_scene(payload, resource_getter, allow_retired=False):
             objects.append({"id":index,"key":node["key"],"positions":world,"normals":normals,
                             "triangles":np.asarray(mesh["triangles"]),"uv":None if mesh["uv"] is None else np.asarray(mesh["uv"]),
                             "surface":node["surface"],"mirrored":np.linalg.det(matrices[node["key"]][:3,:3])<0})
-    camera_matrices(payload["lens"],1)
+    lens_axes(payload["lens"])
     unit(payload["light"]["toward"])
     bounds = world_bounds(np.concatenate(points)) if points else None
     return {"scene":deepcopy(payload),"objects":objects,"resources":resources,"bounds":bounds,

@@ -7,6 +7,7 @@ from .mesh import prepare_mesh
 from .texture import decode_texture
 from .scene import compile_scene, scene_summary
 from .raster import render_samples
+from .equirect import render_equirect, preflight_equirect
 from .channels import resolve_samples, preview_channels, packed_channels, unpack_channels
 from .inspection import inspect_pixel
 from .comparison import compare_frames
@@ -62,6 +63,14 @@ class RendererService:
         scene = self.catalog.get(parsed["scene"],"scene")
         require(scene["state"]=="active","scene_archived","scene is archived",409)
         compiled = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
+        if scene["payload"]["lens"]["projection"] == "equirectangular":
+            require(parsed["region"] is None,"panorama_region",
+                    "equirectangular imaging covers the full sphere and does not accept a region")
+            require(parsed["height"]*2 == parsed["width"],"panorama_aspect",
+                    "equirectangular output must be 2:1 longitude/latitude, use width = 2 * height")
+            budget = preflight_equirect(parsed["width"],parsed["height"],parsed["samples"])
+            return {**scene_summary(compiled),**budget,"region":[0,0,parsed["width"],parsed["height"]],
+                    "admissible":budget["admissible"] and compiled["triangles"]<=60000,"request":parsed}
         region = parsed["region"] or [0,0,parsed["width"],parsed["height"]]
         estimated = region[2]*region[3]*parsed["samples"]**2*128
         return {**scene_summary(compiled),"estimated_buffer_bytes":estimated,
@@ -92,7 +101,10 @@ class RendererService:
             record = self.catalog.transition(record["id"],{"queued"},"running")
             try:
                 started = time.perf_counter()
-                buffers,metadata = render_samples(compiled,parsed)
+                if scene["payload"]["lens"]["projection"] == "equirectangular":
+                    buffers,metadata = render_equirect(compiled,parsed)
+                else:
+                    buffers,metadata = render_samples(compiled,parsed)
                 channels = resolve_samples(buffers,parsed["samples"])
                 metadata.update({key:parsed[key] for key in ("width","height","samples")})
                 metadata.update(node_map=compiled["node_map"],scene_digest=scene["digest"],

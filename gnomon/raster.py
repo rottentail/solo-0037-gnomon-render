@@ -96,4 +96,7 @@ def render_samples(compiled,request):
             for triangle in clip_triangle(packed[face]):
                 stats["clipped_triangles"] += 1
                 stats["written_samples"] += raster_triangle(triangle,obj["id"],obj["surface"],texture,scene["light"],buffers,width,height,region,samples)
-    return buffers,{"view":view.tolist(),"projection":projection.tolist(),"region":list(region),"stats":stats}
+    return buffers,{"view":view.tolist(),"projection":projection.tolist(),
+                    "lens_projection":scene["lens"]["projection"],
+                    "lens":{key:scene["lens"][key] for key in ("eye","target","up","near","far","projection")},
+                    "region":list(region),"stats":stats}

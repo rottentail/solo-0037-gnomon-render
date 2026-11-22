@@ -35,7 +35,12 @@
     {
       "id": "camera",
       "path": "gnomon/camera.py",
-      "responsibility": "观察投影"
+      "responsibility": "观察投影与镜头轴"
+    },
+    {
+      "id": "equirect",
+      "path": "gnomon/equirect.py",
+      "responsibility": "经纬展开环视射线成像"
     },
     {
       "id": "clipping",
@@ -193,6 +198,29 @@
       "success": "多通道及区域等价像素",
       "failure": "超预算失败无complete产物",
       "verification": ".venv/bin/python -m gnomon.demo --flow still-render"
+    },
+    {
+      "id": "panorama-render",
+      "name": "经纬环视成像",
+      "entry": "POST /v1/renders (lens.projection=equirectangular)",
+      "module_ids": [
+        "scene",
+        "camera",
+        "equirect",
+        "shading",
+        "channels",
+        "inspection",
+        "bundle",
+        "service"
+      ],
+      "steps": [
+        "解析经纬镜头并校验2:1全幅与光线预算",
+        "按经纬子采样生成世界光线并做最近三角求交",
+        "归约颜色深度光线通道并验证接缝极区与往返对应"
+      ],
+      "success": "2:1经纬图、光线距离深度、拾取光线方向与成像包镜头差异",
+      "failure": "非2:1、区域裁切或超光线预算拒绝，无complete产物",
+      "verification": ".venv/bin/python -m gnomon.demo --flow panorama-render"
     },
     {
       "id": "pixel-inspect",
