@@ -28,6 +28,9 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
 - samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景。
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
+- 节点可选 `decal` 投影贴花：正交投影在世界空间把徽记从 `origin` 沿 `direction` 投出，`width/height` 是横跨所有表面的同一世界尺度，不依赖网格 UV，也不改写不可变网格；贴花只属于声明它的节点，共享同一网格的其他节点不受影响。
+- 贴花背面按世界法线 `n·direction<0` 且超过 `grazing` 余弦才接受；`grazing_mode=hard` 在阈值处硬切，`fade` 在正对到阈值间线性收边。第二遍只写入深度获胜且归属同一节点的子采样，被遮挡体或其他物体挡住的表面不会被穿透；镜像实例先把翻转法线修正为几何朝外法线再判定。
+- 贴花 `blend=over` 为 alpha 叠合、`multiply` 保留底材着色；`decal.png`/NPZ `decal` 是最近子采样的实际徽记覆盖，拾取结果以 `decal_coverage` 报告同一覆盖。
 - 深度 NPZ 是 OpenGL NDC [-1,1]，背景为 +inf；depth.png 每张按自身有效深度范围做可读预览，不能当作物理距离或跨图绝对标尺。
 
 ## 工作流
@@ -39,8 +42,8 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
 | POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
-| POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json |
-| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
+| POST /v1/renders | 冻结场景和实际资源，生成六张 PNG（含 decal.png）、channels.npz、metadata.json |
+| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标、贴花覆盖，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |

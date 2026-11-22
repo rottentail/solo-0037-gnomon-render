@@ -1,5 +1,6 @@
 import math
 from typing import Literal
+import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
@@ -49,6 +50,46 @@ class Surface(StrictModel):
         return self
 
 
+class Decal(StrictModel):
+    texture: str
+    # Projector origin and projection direction in world coordinates.
+    origin: tuple[float, float, float]
+    direction: tuple[float, float, float]
+    # World-space size of the emblem: one full texture span maps to this length,
+    # so the scale stays identical across every surface the projection crosses.
+    width: float = Field(gt=0, le=10000)
+    height: float = Field(gt=0, le=10000)
+    # Optional in-plane right/up hints controlling emblem orientation.
+    axis_u: tuple[float, float, float] | None = None
+    axis_v: tuple[float, float, float] | None = None
+    # Grazing-angle termination: cosine of the angle between surface normal and
+    # projection direction at which the emblem is cut (hard) or fully faded.
+    grazing: float = Field(default=0.05, ge=0, le=1)
+    grazing_mode: Literal["hard", "fade"] = "hard"
+    blend: Literal["over", "multiply"] = "over"
+    tint: tuple[float, float, float] = (1, 1, 1)
+    alpha_cutoff: float = Field(default=0.5, ge=0, le=1)
+    wrap: Literal["repeat", "clamp"] = "clamp"
+
+    @model_validator(mode="after")
+    def projection_frame(self):
+        if all(abs(v) < 1e-12 for v in self.direction):
+            raise ValueError("decal direction must be a nonzero vector")
+        if any(abs(v) > 1e6 for v in (*self.origin, *self.direction)):
+            raise ValueError("decal frame outside supported coordinates")
+        if any(x < 0 or x > 1 for x in self.tint):
+            raise ValueError("decal tint must be sRGB in [0,1]")
+        if self.axis_u is not None and all(abs(v) < 1e-12 for v in self.axis_u):
+            raise ValueError("decal axis_u must be a nonzero vector")
+        if self.axis_v is not None and all(abs(v) < 1e-12 for v in self.axis_v):
+            raise ValueError("decal axis_v must be a nonzero vector")
+        if self.axis_u is not None and self.axis_v is not None:
+            u, v = np.asarray(self.axis_u), np.asarray(self.axis_v)
+            if abs(float(np.dot(u / np.linalg.norm(u), v / np.linalg.norm(v)))) > 1e-6:
+                raise ValueError("decal axis_u and axis_v must be perpendicular")
+        return self
+
+
 class Node(StrictModel):
     key: str = Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_-]{0,63}$")
     parent: str | None = None
@@ -56,6 +97,9 @@ class Node(StrictModel):
     pose: Transform = Field(default_factory=Transform)
     surface: Surface = Field(default_factory=Surface)
     visible: bool = True
+    # Projected decal is a node-level overlay: the immutable mesh and other nodes
+    # sharing it are never rewritten.
+    decal: Decal | None = None
 
 
 class Lens(StrictModel):

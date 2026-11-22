@@ -46,6 +46,10 @@
     {
       "workflow_id": "resource-retire",
       "command": ".venv/bin/python -m gnomon.demo --flow resource-retire"
+    },
+    {
+      "workflow_id": "projected-decal",
+      "command": ".venv/bin/python -m gnomon.demo --flow projected-decal"
     }
   ],
   "setup_command": "python3 -m venv .venv && .venv/bin/pip install -e '.[examples]'",

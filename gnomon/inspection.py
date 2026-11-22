@@ -14,4 +14,5 @@ def inspect_pixel(channels,metadata,x,y):
             "coverage":float(channels["coverage"][y,x]),"object_id":identity,
             "node":metadata["node_map"].get(str(identity)),"world":point,"normal":normal,
             "ndc_depth":None if identity==0 else float(channels["depth"][y,x]),
+            "decal_coverage":float(channels["decal"][y,x]),
             "linear_rgb":channels["color"][y,x].tolist(),"selection":"nearest covered subpixel"}

@@ -53,6 +53,11 @@
       "responsibility": "材质和光照"
     },
     {
+      "id": "decal",
+      "path": "gnomon/decal.py",
+      "responsibility": "投影贴花坐标系与掠射角收边"
+    },
+    {
       "id": "channels",
       "path": "gnomon/channels.py",
       "responsibility": "通道归约与编码"
@@ -290,6 +295,28 @@
       "success": "未来绑定禁止旧修订可成像",
       "failure": "重复状态转换拒绝",
       "verification": ".venv/bin/python -m gnomon.demo --flow resource-retire"
+    },
+    {
+      "id": "projected-decal",
+      "name": "投影贴花",
+      "entry": "POST /v1/renders (节点 decal 叠加)",
+      "module_ids": [
+        "decal",
+        "raster",
+        "scene",
+        "shading",
+        "channels",
+        "inspection",
+        "service"
+      ],
+      "steps": [
+        "世界空间正交投影把同一尺度映射到相邻表面",
+        "深度与背面裁决阻止穿透，掠射角按用户策略收边",
+        "以叠加层合成而不改写网格，并输出贴花覆盖通道"
+      ],
+      "success": "跨面同尺度、遮挡与镜像实例覆盖可拾取",
+      "failure": "无网格目标或非法投影帧拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow projected-decal"
     }
   ],
   "complexity": {

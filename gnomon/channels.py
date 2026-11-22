@@ -12,6 +12,11 @@ def resolve_samples(buffers,samples):
     closest = depth.argmin(axis=2)
     yy,xx = np.indices((h,w))
     resolved = {"color":color,"coverage":(buffers["object_id"]>0).reshape(h,samples,w,samples).mean(axis=(1,3))}
+    # The decal mask follows the nearest covered subsample, matching picking
+    # semantics: a blocker winning depth cannot inherit emblem coverage from a
+    # different subsample of the same output pixel.
+    decal_groups = buffers["decal"].reshape(h,samples,w,samples).transpose(0,2,1,3).reshape(h,w,-1)
+    resolved["decal"] = decal_groups[yy,xx,closest]
     for key in ("depth","object_id","normal","world"):
         source = buffers[key]
         if source.ndim == 2:
@@ -41,10 +46,12 @@ def preview_channels(channels):
     colors = np.stack([(identifiers*73)%255,(identifiers*151)%255,(identifiers*199)%255],axis=2).astype(np.uint8)
     normal = np.rint(np.clip(channels["normal"]*0.5+0.5,0,1)*255).astype(np.uint8)
     normal[~valid] = 0
+    decal = np.rint(np.clip(channels["decal"],0,1)*255).astype(np.uint8)
     return {"color.png":png_bytes(encode_rgb(channels["color"])),
             "depth.png":png_bytes(np.rint(grey*255).astype(np.uint8)),
             "normal.png":png_bytes(normal),"object-id.png":png_bytes(colors),
-            "coverage.png":png_bytes(np.rint(channels["coverage"]*255).astype(np.uint8))}
+            "coverage.png":png_bytes(np.rint(channels["coverage"]*255).astype(np.uint8)),
+            "decal.png":png_bytes(decal)}
 
 
 def packed_channels(channels):

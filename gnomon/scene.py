@@ -39,17 +39,31 @@ def compile_scene(payload, resource_getter, allow_retired=False):
         texture = node["surface"]["texture"]
         if texture:
             resource(texture,"texture")
+        decal = node.get("decal")
+        if decal:
+            # The decal texture is a scene resource like any other; meshes
+            # themselves stay untouched and need no UV for projection.
+            resource(decal["texture"],"texture")
+            require(bool(node["mesh"]),"decal_target","a decal requires the node to carry a mesh")
         if not node["mesh"]:
             continue
         mesh = resource(node["mesh"],"mesh")
         require(not texture or mesh["uv"] is not None,"texture_uv","textured node requires UV coordinates")
         world = transform_points(np.asarray(mesh["positions"]),matrices[node["key"]])
         normals = transform_normals(mesh["normals"],matrices[node["key"]])
+        mirrored = np.linalg.det(matrices[node["key"]][:3,:3]) < 0
+        if mirrored:
+            # A negative determinant reverses winding, so inverse-transpose
+            # normals end up pointing into the solid; flip to the geometric
+            # outward normal. Shading, normal channel and decal facing tests
+            # then stay consistent for mirrored instances.
+            normals = -normals
         if visibility[node["key"]]:
             points.append(world)
             objects.append({"id":index,"key":node["key"],"positions":world,"normals":normals,
                             "triangles":np.asarray(mesh["triangles"]),"uv":None if mesh["uv"] is None else np.asarray(mesh["uv"]),
-                            "surface":node["surface"],"mirrored":np.linalg.det(matrices[node["key"]][:3,:3])<0})
+                            "surface":node["surface"],"mirrored":mirrored,
+                            "decal":decal})
     camera_matrices(payload["lens"],1)
     unit(payload["light"]["toward"])
     bounds = world_bounds(np.concatenate(points)) if points else None

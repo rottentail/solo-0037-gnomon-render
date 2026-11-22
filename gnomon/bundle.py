@@ -11,6 +11,7 @@ def build_bundle(render,files):
                              "depth":"OpenGL NDC [-1,1], +inf for background",
                              "world":"nearest covered subpixel world position",
                              "coverage":"fraction of covered uniform samples",
+                             "decal":"fraction of uniform samples carrying the projected emblem overlay",
                              "normal":"world-space unit normal at nearest sample",
                              "object_id":"scene node index, 0 background"}}
     output = BytesIO()
