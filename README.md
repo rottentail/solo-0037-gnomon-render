@@ -30,6 +30,31 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
 - 深度 NPZ 是 OpenGL NDC [-1,1]，背景为 +inf；depth.png 每张按自身有效深度范围做可读预览，不能当作物理距离或跨图绝对标尺。
 
+## 轮廓线层
+
+在 `POST /v1/renders` 中提供可选 `lines` 对象，或对已完成渲染调用 `POST /v1/renders/{id}/line-layers`，即可得到与颜色成像同源、但可单独交付的轮廓线层。线只来自**投影后的网格几何边**，从不读取纹理或着色颜色，因此棋盘、花纹和 alpha 镂空都不会产生几何线。三类结构分别输出、可由作者独立开关：
+
+- `silhouette`（外轮廓）：几何与背景的分界，含开放网格边界边和闭合实体的视向剪影边（前后朝向反转处）。
+- `occlusion`（遮挡分界）：一个物体在另一物体前方、且两侧存在真实深度间隔（`depth_gap`）的交界；共面贴合不画线，避免串线。
+- `crease`（内部折线）：同一物体相邻三角面的二面角超过 `crease_angle`（默认 35°）的折痕；平滑着色的共享边不画线。
+
+定位与线宽约定：
+
+- 边线位置锚定在连续的投影几何上，使用全画幅相机与全画幅像素坐标计算；`region` 局部渲染只是对全画幅线图的切片，因此线在原图中的位置与整图完全一致（与颜色通道相同的区域不变量），放大输出只提高栅格分辨率、不改变几何位置。
+- 线宽 `width_silhouette/width_occlusion/width_crease` 一律以**输出像素**度量，并随抗锯齿以覆盖率表达，不随 `samples` 变化。
+- 可见性按子采样对该次渲染的深度与对象标识缓冲逐点判定：边样本被更近表面遮挡即丢弃；细小前景物体贴近后方轮廓时，二者仅在真实深度间断处连成遮挡分界，不会跨过空隙串到背景里的线。
+
+产物（每次线层渲染或线层记录都会写出）：
+
+| 文件 | 含义 |
+|---|---|
+| `line-silhouette.png` / `line-occlusion.png` / `line-crease.png` | 三类结构各自的单通道覆盖率掩码（灰度 PNG），可单独交付 |
+| `line-layer.png` | 仅含作者启用结构的透明 RGBA 线层（线性 RGB 编码回 sRGB） |
+| `line-overlay.png` | 启用的线叠合到同构图原颜色图上的合成结果 |
+| `lines.npz` | 逐像素分数覆盖率与线性 RGBA 线层，供数值复核 |
+
+至少需要保留一种结构，否则返回 `line_options` 领域失败。线层记录复用渲染时冻结的场景与资源，历史渲染在资源停用后仍可重新生成一致的线层。
+
 ## 工作流
 
 | 入口 | 结果与边界 |
@@ -43,6 +68,7 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
+| POST /v1/renders/{id}/line-layers | 从已完成渲染的冻结输入生成可单独交付的轮廓线层 |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
 | POST /v1/resources/{id}/state/retired | 拒绝新场景绑定，旧场景继续引用；active 可恢复 |
 | POST /v1/scenes/{id}/state/archived | 阻止新成像；active 可恢复，已有产物可读 |

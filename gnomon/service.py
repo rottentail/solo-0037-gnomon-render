@@ -6,14 +6,15 @@ from .artifacts import Artifacts
 from .mesh import prepare_mesh
 from .texture import decode_texture
 from .scene import compile_scene, scene_summary
-from .raster import render_samples
+from .raster import render_samples, render_visibility
 from .channels import resolve_samples, preview_channels, packed_channels, unpack_channels
 from .inspection import inspect_pixel
 from .comparison import compare_frames
 from .sheet import build_sheet
 from .bundle import build_bundle
+from .outline import build_outline, line_artifacts, LINE_KINDS
 from .errors import RenderError, require
-from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput
+from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput, LineLayerInput, LineOptions
 
 
 class RendererService:
@@ -94,13 +95,77 @@ class RendererService:
                 started = time.perf_counter()
                 buffers,metadata = render_samples(compiled,parsed)
                 channels = resolve_samples(buffers,parsed["samples"])
+                line_summary = None
+                if parsed.get("lines") is not None:
+                    line_options = LineOptions.model_validate(parsed["lines"])
+                    require(line_options.any_enabled(),"line_options","at least one line structure must be retained")
+                    # Resolve line visibility from full-frame buffers so crops
+                    # keep identical full-frame line coordinates.
+                    if parsed.get("region"):
+                        visibility = render_visibility(compiled,parsed)
+                        buffer_region = (0,0,parsed["width"],parsed["height"])
+                    else:
+                        visibility, buffer_region = buffers, None
+                    _,coverages = build_outline(compiled,visibility,parsed,line_options,buffer_region)
+                    line_files,_,_ = line_artifacts(coverages,line_options,channels["color"])
+                    line_summary = self._line_summary(line_options,coverages,metadata)
+                else:
+                    line_files = {}
                 metadata.update({key:parsed[key] for key in ("width","height","samples")})
                 metadata.update(node_map=compiled["node_map"],scene_digest=scene["digest"],
                                 elapsed_seconds=time.perf_counter()-started)
                 files = preview_channels(channels)
                 files["channels.npz"] = packed_channels(channels)
                 files["metadata.json"] = canonical(metadata).encode()
-                return self._complete(record,files,{"metadata":metadata})
+                files.update(line_files)
+                details = {"metadata":metadata}
+                if line_summary is not None:
+                    details["lines"] = line_summary
+                return self._complete(record,files,details)
+            except Exception as exc:
+                self._fail(record,exc)
+                raise
+
+    @staticmethod
+    def _line_summary(options,coverages,metadata):
+        region = metadata["region"]
+        return {"structures":{kind:{"enabled":bool(getattr(options,kind)),
+                                    "width_output_px":getattr(options,f"width_{kind}"),
+                                    "covered_pixels":int((coverages[kind] > 0).sum())}
+                              for kind in LINE_KINDS},
+                "crease_angle":options.crease_angle,"depth_gap":options.depth_gap,
+                "anchoring":"projected mesh edges in full-frame output pixels; region crops keep full-frame coordinates",
+                "region":list(region)}
+
+    def line_layer(self,identity,request):
+        """Independently deliver a contour layer from a frozen completed render."""
+        parsed = LineLayerInput.model_validate(request)
+        options = parsed.lines
+        require(options.any_enabled(),"line_options","at least one line structure must be retained")
+        with self.operation_lock:
+            render = self.catalog.get(identity,"render")
+            require(render["state"]=="complete","line_layer_incomplete","render must be complete",409)
+            snapshot = render["payload"]["snapshot"]
+            def frozen(resource_id,kind):
+                item = snapshot["resources"][resource_id]
+                return item
+            stored_options = parsed.model_dump()["lines"]
+            record = self.catalog.create("line_layer",{"render":identity,"lines":stored_options},"queued")
+            record = self.catalog.transition(record["id"],{"queued"},"running")
+            try:
+                compiled = compile_scene(snapshot["scene"],frozen,allow_retired=True)
+                request_shape = render["payload"]["request"]
+                buffers,metadata = render_samples(compiled,request_shape)
+                channels = resolve_samples(buffers,request_shape["samples"])
+                if request_shape.get("region"):
+                    visibility = render_visibility(compiled,request_shape)
+                    buffer_region = (0,0,request_shape["width"],request_shape["height"])
+                else:
+                    visibility, buffer_region = buffers, None
+                _,coverages = build_outline(compiled,visibility,request_shape,options,buffer_region)
+                files,_,_ = line_artifacts(coverages,options,channels["color"])
+                line_summary = self._line_summary(options,coverages,metadata)
+                return self._complete(record,files,{"render":identity,"lines":line_summary})
             except Exception as exc:
                 self._fail(record,exc)
                 raise

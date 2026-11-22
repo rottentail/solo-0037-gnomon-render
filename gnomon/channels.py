@@ -30,6 +30,23 @@ def png_bytes(rgb):
     return output.getvalue()
 
 
+def mask_png_bytes(coverage):
+    """Single-channel grayscale PNG of a [0,1] coverage array."""
+    grey = np.rint(np.clip(coverage,0,1)*255).astype(np.uint8)
+    output = BytesIO()
+    Image.fromarray(grey,mode="L").save(output,format="PNG")
+    return output.getvalue()
+
+
+def rgba_png_bytes(rgba):
+    """RGBA PNG from linear RGB coverage; RGB is encoded back to sRGB."""
+    rgb = encode_rgb(rgba[:,:,:3])
+    alpha = np.rint(np.clip(rgba[:,:,3],0,1)*255).astype(np.uint8)
+    output = BytesIO()
+    Image.fromarray(np.dstack([rgb,alpha]),mode="RGBA").save(output,format="PNG")
+    return output.getvalue()
+
+
 def preview_channels(channels):
     valid = channels["object_id"]>0
     depth = channels["depth"]

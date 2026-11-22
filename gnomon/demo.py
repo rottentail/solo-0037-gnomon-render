@@ -9,7 +9,7 @@ from .samples import wedge_mesh,screen_mesh,checker_texture,compose_scene
 from .errors import RenderError,require
 from .channels import unpack_channels
 
-FLOWS = ["mesh-ingest","texture-ingest","scene-revise","scene-preflight","still-render","pixel-inspect","image-compare","view-sheet","render-bundle","resource-retire"]
+FLOWS = ["mesh-ingest","texture-ingest","scene-revise","scene-preflight","still-render","pixel-inspect","image-compare","view-sheet","render-bundle","resource-retire","line-layer"]
 
 
 def expect_rejection(operation,code):
@@ -46,6 +46,35 @@ def walkthrough(root,flow="all",output=None):
             large = renderer.preflight({**request,"width":1024,"height":1024,"samples":3})
             results["scene-preflight"] = {"normal":normal,"oversized_admissible":large["admissible"]}
         rendered = renderer.render(request)
+        if flow in {"all","line-layer"}:
+            line_request = {**request,"lines":{"silhouette":True,"occlusion":True,"crease":True,
+                                                "width_silhouette":1.5,"width_occlusion":1.25,"width_crease":1.0}}
+            lined = renderer.render(line_request)
+            line_names = [name for name in lined["details"]["artifacts"] if name.startswith("line")]
+            crop_request = {**line_request,"region":[16,12,48,40]}
+            cropped = renderer.render(crop_request)
+            full_lines = unpack_channels(renderer.artifacts.read(lined,"lines.npz"))
+            crop_lines = unpack_channels(renderer.artifacts.read(cropped,"lines.npz"))
+            import numpy as np
+            for kind in ("silhouette","occlusion","crease"):
+                key = f"line_{kind}"
+                require(np.array_equal(full_lines[key][12:52,16:64],crop_lines[key]),
+                        "line_crop_semantics","line layer region differs from full frame")
+            # Texture checker cells must never appear as geometry lines.
+            only_silhouette = renderer.render({**request,"lines":{"silhouette":True,"occlusion":False,"crease":False}})
+            toggled = unpack_channels(renderer.artifacts.read(only_silhouette,"lines.npz"))
+            require(toggled["line_occlusion"].max()==0 and toggled["line_crease"].max()==0,
+                    "line_toggle","disabled line structures must be absent")
+            standalone = renderer.line_layer(rendered["id"],{"lines":line_request["lines"]})
+            require(standalone["state"]=="complete","line_layer","standalone line layer must complete")
+            results["line-layer"] = {"artifacts":sorted(line_names),
+                                     "summary":lined["details"]["lines"]["structures"],
+                                     "region_matches":True,"standalone":standalone["id"]}
+            if output:
+                for name in line_names:
+                    Path(output,name).write_bytes(renderer.artifacts.read(lined,name))
+            expect_rejection(lambda:renderer.render(
+                {**request,"lines":{"silhouette":False,"occlusion":False,"crease":False}}),"line_options")
         if flow in {"all","still-render"}:
             crop = renderer.render({**request,"region":[16,12,48,40]})
             full = unpack_channels(renderer.artifacts.read(rendered,"channels.npz"))

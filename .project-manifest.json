@@ -48,6 +48,11 @@
       "responsibility": "样本覆盖与深度"
     },
     {
+      "id": "outline",
+      "path": "gnomon/outline.py",
+      "responsibility": "几何轮廓线提取与分类"
+    },
+    {
       "id": "shading",
       "path": "gnomon/shading.py",
       "responsibility": "材质和光照"
@@ -271,6 +276,27 @@
       "success": "有摘要和通道含义的ZIP",
       "failure": "缺失或损坏通道拒绝",
       "verification": ".venv/bin/python -m gnomon.demo --flow render-bundle"
+    },
+    {
+      "id": "line-layer",
+      "name": "轮廓线层",
+      "entry": "POST /v1/renders/{id}/line-layers",
+      "module_ids": [
+        "outline",
+        "raster",
+        "scene",
+        "camera",
+        "channels",
+        "service"
+      ],
+      "steps": [
+        "从投影网格边分类外轮廓、遮挡分界和内部折线",
+        "以深度与对象缓冲解析可见性并按输出像素线宽成层",
+        "返回可单独交付的三类掩码、透明线层与叠合图"
+      ],
+      "success": "三类可分别辨认且区域等价的轮廓线产物",
+      "failure": "全部结构关闭或渲染未完成拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow line-layer"
     },
     {
       "id": "resource-retire",

@@ -103,12 +103,42 @@ class SceneInput(StrictModel):
         return self
 
 
+class LineOptions(StrictModel):
+    # Independent toggles: outer silhouette, inter-object occlusion boundary, internal crease.
+    silhouette: bool = True
+    occlusion: bool = True
+    crease: bool = True
+    # Stroke widths are measured in output pixels of the full frame; geometry position is
+    # anchored to projected edges, so region crops and larger output keep the same location.
+    width_silhouette: float = Field(default=1.5, ge=0.25, le=16)
+    width_occlusion: float = Field(default=1.25, ge=0.25, le=16)
+    width_crease: float = Field(default=1.0, ge=0.25, le=16)
+    # Dihedral angle (degrees) above which a shared edge reads as an internal fold.
+    crease_angle: float = Field(default=35.0, ge=0.0, le=179.0)
+    # NDC depth separation required to treat two touching surfaces as distinct objects.
+    depth_gap: float = Field(default=1e-3, gt=0.0, le=1.0)
+    color_silhouette: tuple[float, float, float] = (0.02, 0.02, 0.03)
+    color_occlusion: tuple[float, float, float] = (0.75, 0.18, 0.12)
+    color_crease: tuple[float, float, float] = (0.12, 0.32, 0.78)
+
+    @model_validator(mode="after")
+    def line_color_range(self):
+        for name in ("color_silhouette", "color_occlusion", "color_crease"):
+            if any(x < 0 or x > 1 for x in getattr(self, name)):
+                raise ValueError("line colors must be sRGB in [0,1]")
+        return self
+
+    def any_enabled(self):
+        return self.silhouette or self.occlusion or self.crease
+
+
 class RenderInput(StrictModel):
     scene: str
     width: int = Field(default=256, ge=16, le=1024)
     height: int = Field(default=256, ge=16, le=1024)
     samples: Literal[1, 2, 3] = 1
     region: tuple[int, int, int, int] | None = None
+    lines: LineOptions | None = None
 
     @model_validator(mode="after")
     def region_bounds(self):
@@ -117,6 +147,10 @@ class RenderInput(StrictModel):
             if x < 0 or y < 0 or w <= 0 or h <= 0 or x+w > self.width or y+h > self.height:
                 raise ValueError("region is x,y,width,height in full-frame coordinates")
         return self
+
+
+class LineLayerInput(StrictModel):
+    lines: LineOptions
 
 
 class CompareInput(StrictModel):
