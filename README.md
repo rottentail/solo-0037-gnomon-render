@@ -16,7 +16,7 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 打开 http://127.0.0.1:8737/docs 浏览 OpenAPI。服务仅设计为单进程；CPU 成像请求同步返回，完成/失败状态持久化。目录由服务独占，重启将中断的未完成记录标记 failed；重新提交可生成新结果。
 
-服务运行后可执行 `.venv/bin/python examples/http_walkthrough.py`，通过真实 HTTP 上传样例并下载静帧。
+服务运行后可执行 `.venv/bin/python examples/http_walkthrough.py`，通过真实 HTTP 上传样例并下载静帧。无需启动服务即可执行 `.venv/bin/python examples/explosion_assembly.py`，落盘爆炸计划、独立爆炸场景与 before/after 正交校样。
 
 ## 成像约定
 
@@ -43,9 +43,19 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
+| POST /v1/explosions | 按选定部件组生成独立爆炸场景、前后位置计划与 before/after 正交校样 |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
 | POST /v1/resources/{id}/state/retired | 拒绝新场景绑定，旧场景继续引用；active 可恢复 |
 | POST /v1/scenes/{id}/state/archived | 阻止新成像；active 可恢复，已有产物可读 |
+
+## 爆炸分解约定
+
+- `POST /v1/explosions` 不修改原场景：结果是一条独立的 `explosion` 记录，含 `plan.json`、`exploded-scene.json` 和 `proof-sheet.png`；原场景摘要与血缘保持不变。
+- `groups` 是作者选定的部件组根节点。组内全部后代（含无网格的装配节点）作为同一刚性单元移动，世界位移只施加在组根的局部位姿上一次，因此父子嵌套不会让某件移动两次；未选中的节点保持原位姿。
+- 共享同一网格的节点彼此独立，按各自所属组分别记录单次位移；`plan.json` 的每个节点给出 `local_offset`、`world_shift`、`origin_before` 与 `origin_after`，可直接查询。
+- 指示线（`connectors`）起点固定在组根原来的接合世界位置，终点是展开后的同一锚点，线向量等于该组的 `world_shift`。
+- `gap_factor`（按场景半径缩放）与绝对 `spacing` 控制拥挤与空间保真的权衡：0 保留作者原包装，越大越疏朗；`directions` 可逐组显式指定展开轴，缺省沿组根相对父节点的径向。
+- 校样是正交投影的 before/after 成对视角（`angles` 绕 Y 轴），展开视图叠加琥珀色接合指示线；爆炸后的场景本身也是合法场景，可按普通 `/v1/renders` 流程成像。
 
 ## 环境和资源边界
 

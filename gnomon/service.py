@@ -12,8 +12,9 @@ from .inspection import inspect_pixel
 from .comparison import compare_frames
 from .sheet import build_sheet
 from .bundle import build_bundle
+from .explosion import plan_explosion, proof_lens, overlay_guides, build_proof_sheet
 from .errors import RenderError, require
-from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput
+from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput, ExplosionInput
 
 
 class RendererService:
@@ -144,6 +145,63 @@ class RendererService:
                     return preview_channels(channels)["color.png"],metadata
                 png,index = build_sheet(snapshot["scene"],parsed["angles"],parsed["size"],parsed["columns"],render_view)
                 return self._complete(record,{"sheet.png":png,"index.json":canonical(index).encode()},{"views":len(index),"index":index})
+            except Exception as exc:
+                self._fail(record,exc)
+                raise
+
+    def explode(self,request):
+        parsed = ExplosionInput.model_validate(request).model_dump()
+        with self.operation_lock:
+            scene = self.catalog.get(parsed["scene"],"scene")
+            require(scene["state"]=="active","scene_archived","scene is archived",409)
+            require(not set(parsed["directions"]).difference(set(parsed["groups"])),
+                    "explode_direction","a direction references a group not in groups")
+            record = self.catalog.create("explosion",{"request":parsed,"scene_id":scene["id"],
+                                                       "scene_digest":scene["digest"]},"planning")
+            try:
+                # Planning reads the frozen inputs; the stored scene payload is never mutated.
+                plan = plan_explosion(scene["payload"],parsed,self.catalog.get)
+                compiled_original = compile_scene(scene["payload"],self.catalog.get,allow_retired=True)
+                compiled_exploded = compile_scene(plan["scene"],self.catalog.get,allow_retired=True)
+                # The exploded revision must remain renderable within the same budgets.
+                require(compiled_exploded["triangles"] <= 60000,"triangle_budget",
+                        "exploded scene exceeds 60000 triangles")
+                require(len(plan["scene"]["nodes"]) <= 100,"explode_nodes","exploded scene exceeds 100 nodes")
+                size,samples = parsed["size"],parsed["samples"]
+                config = {"width":size,"height":size,"samples":samples,"region":None}
+
+                def render_payload(compiled):
+                    buffers,metadata = render_samples(compiled,config)
+                    return preview_channels(resolve_samples(buffers,samples))["color.png"],metadata
+
+                labels,cells,index = [],[],[]
+                reference_lens = scene["payload"]["lens"]
+                columns = 2
+                for angle in parsed["angles"]:
+                    lens_before = proof_lens(reference_lens,plan["bounds_before"],angle)
+                    lens_after = proof_lens(reference_lens,plan["bounds_after"],angle)
+                    for stage,lens,compiled in (("before",lens_before,compiled_original),
+                                                ("after",lens_after,compiled_exploded)):
+                        payload = {**compiled["scene"],"lens":lens}
+                        view_compiled = compile_scene(payload,self.catalog.get,allow_retired=True)
+                        png,metadata = render_payload(view_compiled)
+                        if stage == "after" and parsed["guides"]:
+                            png = overlay_guides(png,plan["connectors"],lens,size)
+                        cell = len(cells)
+                        labels.append(f"{angle:g}° {stage}")
+                        cells.append(png)
+                        index.append({"angle":angle,"stage":stage,"lens":lens,
+                                      "rect":[(cell%columns)*size,(cell//columns)*(size+24),size,size],
+                                      "render":metadata})
+                sheet_png = build_proof_sheet(cells,size,columns,labels)
+                files = {"proof-sheet.png":sheet_png,
+                         "plan.json":canonical(plan).encode(),
+                         "exploded-scene.json":canonical(plan["scene"]).encode()}
+                details = {"plan":plan,"views":len(index),"index":index,
+                           "group_count":len(plan["groups"]),"node_count":len(plan["nodes"]),
+                           "moved_nodes":sum(1 for entry in plan["nodes"] if entry["moved"]),
+                           "bounds_before":plan["bounds_before"],"bounds_after":plan["bounds_after"]}
+                return self._complete(record,files,details)
             except Exception as exc:
                 self._fail(record,exc)
                 raise

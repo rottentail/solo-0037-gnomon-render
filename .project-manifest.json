@@ -83,6 +83,11 @@
       "responsibility": "自描述归档"
     },
     {
+      "id": "explosion",
+      "path": "gnomon/explosion.py",
+      "responsibility": "爆炸分解规划与正交校样"
+    },
+    {
       "id": "service",
       "path": "gnomon/service.py",
       "responsibility": "工作流组织"
@@ -271,6 +276,30 @@
       "success": "有摘要和通道含义的ZIP",
       "failure": "缺失或损坏通道拒绝",
       "verification": ".venv/bin/python -m gnomon.demo --flow render-bundle"
+    },
+    {
+      "id": "assembly-explode",
+      "name": "装配爆炸分解",
+      "entry": "POST /v1/explosions",
+      "module_ids": [
+        "explosion",
+        "scene",
+        "math3d",
+        "camera",
+        "raster",
+        "channels",
+        "catalog",
+        "service",
+        "api"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "按作者选定部件组规划单次刚性位移并生成独立场景",
+        "输出可查询前后位置、接合指示线与正交校样"
+      ],
+      "success": "爆炸计划、独立场景与before/after正交校样",
+      "failure": "未知组、零方向或归档场景拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow assembly-explode"
     },
     {
       "id": "resource-retire",

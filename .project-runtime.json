@@ -44,6 +44,10 @@
       "command": ".venv/bin/python -m gnomon.demo --flow render-bundle"
     },
     {
+      "workflow_id": "assembly-explode",
+      "command": ".venv/bin/python -m gnomon.demo --flow assembly-explode"
+    },
+    {
       "workflow_id": "resource-retire",
       "command": ".venv/bin/python -m gnomon.demo --flow resource-retire"
     }

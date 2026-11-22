@@ -57,9 +57,9 @@ class Catalog:
 
     def recover_interrupted(self):
         with self.lock, self.db:
-            rows = self.db.execute("SELECT id FROM records WHERE state IN ('queued','running','building','measuring','packing')").fetchall()
+            rows = self.db.execute("SELECT id FROM records WHERE state IN ('queued','running','building','measuring','packing','planning')").fetchall()
             for row in rows:
-                self.transition(row[0],{"queued","running","building","measuring","packing"},"failed",{"error":{"code":"interrupted","detail":"process ended before completion; submit a new operation"}})
+                self.transition(row[0],{"queued","running","building","measuring","packing","planning"},"failed",{"error":{"code":"interrupted","detail":"process ended before completion; submit a new operation"}})
         return len(rows)
 
     def close(self):

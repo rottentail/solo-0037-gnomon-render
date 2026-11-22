@@ -130,3 +130,16 @@ class SheetInput(StrictModel):
     angles: list[float] = Field(default_factory=lambda: [0, 90, 180, 270], min_length=2, max_length=12)
     size: int = Field(default=128, ge=32, le=256)
     columns: int = Field(default=4, ge=1, le=6)
+
+
+class ExplosionInput(StrictModel):
+    scene: str
+    groups: list[str] = Field(min_length=1, max_length=100)
+    directions: dict[str, tuple[float, float, float]] = Field(default_factory=dict)
+    # 0 keeps the authored packing; larger values trade crowding for spatial fidelity.
+    gap_factor: float = Field(default=0.35, ge=0.0, le=10.0)
+    spacing: float = Field(default=0.0, ge=0.0, le=100000.0)
+    size: int = Field(default=192, ge=32, le=512)
+    samples: Literal[1, 2, 3] = 1
+    angles: list[float] = Field(default_factory=lambda: [0.0, 45.0, 90.0], min_length=1, max_length=8)
+    guides: bool = True
