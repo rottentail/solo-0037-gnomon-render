@@ -95,7 +95,7 @@ class RendererService:
                 buffers,metadata = render_samples(compiled,parsed)
                 channels = resolve_samples(buffers,parsed["samples"])
                 metadata.update({key:parsed[key] for key in ("width","height","samples")})
-                metadata.update(node_map=compiled["node_map"],scene_digest=scene["digest"],
+                metadata.update(node_map=compiled["node_map"],instance_map=compiled["instance_map"],scene_digest=scene["digest"],
                                 elapsed_seconds=time.perf_counter()-started)
                 files = preview_channels(channels)
                 files["channels.npz"] = packed_channels(channels)

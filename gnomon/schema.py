@@ -49,6 +49,13 @@ class Surface(StrictModel):
         return self
 
 
+class Instance(StrictModel):
+    key: str = Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_-]{0,63}$")
+    pose: Transform = Field(default_factory=Transform)
+    surface: Surface | None = None
+    visible: bool = True
+
+
 class Node(StrictModel):
     key: str = Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_-]{0,63}$")
     parent: str | None = None
@@ -56,6 +63,13 @@ class Node(StrictModel):
     pose: Transform = Field(default_factory=Transform)
     surface: Surface = Field(default_factory=Surface)
     visible: bool = True
+    instances: list[Instance] | None = Field(default=None, max_length=128)
+
+    @model_validator(mode="after")
+    def instance_rules(self):
+        if self.instances is not None and self.mesh is None:
+            raise ValueError("instanced node requires a mesh")
+        return self
 
 
 class Lens(StrictModel):

@@ -21,12 +21,13 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 ## 成像约定
 
 - 右手世界坐标；Y 向上，相机看向 target。旋转单位为度，局部顺序为 X、Y、Z，随后由父节点变换进入世界空间。
+- 节点可声明 instances 阵列共享同一网格：每个实例在节点世界变换之后再应用自身 pose（阵列局部坐标与父链共同决定成像），可整体替换 surface、单独 visible；实例键在节点内唯一，surface 省略时继承节点 surface。
 - 透视 fov 为垂直视角，正交 span 为垂直世界长度；near/far 为正距离。六个齐次平面裁剪后进行透视校正插值。
 - PNG 纹理按未附 ICC 的 sRGB 解码，UV 原点在左下，双线性采样。repeat/clamp 均可。alpha_cutoff 是二值裁切，不表示半透明混合。
 - 材质基色为 sRGB，着色和抗锯齿平均在线性空间，PNG 最后编码回 sRGB；超出显示范围的亮度仅在 PNG 截断，NPZ 保留。
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
-- samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景。
+- samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识：普通节点为节点序号，实例对象自节点数+1 起按展开顺序编号，0 为背景；node_map 以 节点/实例 路径命名实例，拾取另返回 instance 键。
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
 - 深度 NPZ 是 OpenGL NDC [-1,1]，背景为 +inf；depth.png 每张按自身有效深度范围做可读预览，不能当作物理距离或跨图绝对标尺。
 
@@ -36,11 +37,11 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 |---|---|
 | POST /v1/meshes | 三角索引、面积、法线、UV、包围盒校验，退化面拒绝 |
 | POST /v1/textures | PNG 解码、直通透明度、尺寸与格式约束 |
-| POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
+| POST /v1/scenes | 唯一键、父图、资源、相机与实例阵列校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
-| POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
+| POST /v1/preflight | 世界包围盒、实例展开后的可见三角数、预计帧缓冲与可受理判断 |
 | POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json |
-| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
+| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面、世界坐标与具体实例，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
@@ -49,10 +50,10 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 ## 环境和资源边界
 
-每个网格最多 20,000 顶点 / 30,000 三角，场景最多 100 节点 / 60,000 可见三角。纹理最多 1024×1024，编码 PNG 最多 4 MB。成像边长 16–1024，保守估算采样缓冲不超过 160 MiB；这不是整个 Python 进程的内存限制，解码资源、JSON、数组临时副本和归档还需要内存。静帧没有阴影、透射、骨骼、动画或外部模型格式导入。
+每个网格最多 20,000 顶点 / 30,000 三角，场景最多 100 节点 / 60,000 可见三角；实例每节点最多 128 个，阵列展开后渲染对象最多 256 个。纹理最多 1024×1024，编码 PNG 最多 4 MB。成像边长 16–1024，保守估算采样缓冲不超过 160 MiB；这不是整个 Python 进程的内存限制，解码资源、JSON、数组临时副本和归档还需要内存。静帧没有阴影、透射、骨骼、动画或外部模型格式导入。
 
 `.gnomon-data/gnomon.sqlite3` 保存记录，artifacts/ 保存校验摘要的结果。运行产物不进入 Git。应使用同一目录和单个 worker；不承诺跨进程互斥或分布式执行。HTTP 是可信环境中的成像接口，不含身份系统；不要直接暴露到公共网络。
 
 ## 验证与测试边界
 
-`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十一条工作流（含 instance-array 实例阵列证明）。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。

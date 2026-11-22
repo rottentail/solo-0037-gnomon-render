@@ -290,6 +290,27 @@
       "success": "未来绑定禁止旧修订可成像",
       "failure": "重复状态转换拒绝",
       "verification": ".venv/bin/python -m gnomon.demo --flow resource-retire"
+    },
+    {
+      "id": "instance-array",
+      "name": "实例阵列",
+      "entry": "POST /v1/scenes",
+      "module_ids": [
+        "scene",
+        "math3d",
+        "raster",
+        "inspection",
+        "comparison",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "共享几何的实例各自位姿材质可拾取，单实例修改不影响其他实例与历史画面",
+      "failure": "实例键重复或展开超预算拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow instance-array"
     }
   ],
   "complexity": {
