@@ -5,3 +5,4 @@ __pycache__/
 .gnomon-data/
 run-output/
 .DS_Store
+.bootstrap/

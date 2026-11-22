@@ -43,16 +43,33 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 | GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
+| POST /v1/sequences | 节点位姿与相机关键帧序列，逐帧输出多通道、联系表与逐帧输入清单 |
+| POST /v1/sequences/{id}/frames/{n}/rerender | 用冻结输入单独重做第 n 帧，产物与整段中的该帧字节一致 |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
 | POST /v1/resources/{id}/state/retired | 拒绝新场景绑定，旧场景继续引用；active 可恢复 |
 | POST /v1/scenes/{id}/state/archived | 阻止新成像；active 可恢复，已有产物可读 |
 
+## 关键帧静帧序列
+
+`/v1/sequences` 把一个冻结场景沿时间轴采样成短静帧序列（2–24 帧），每条节点轨道或相机轨道各自选择插值模式：
+
+- `step`：保持上一关键帧，关键帧时刻跳变（不连续）。
+- `linear`：分量线性插值（连续，速度在关键帧突变）。
+- `smooth`：smoothstep 缓入缓出（位置与速度连续，加速度在关键帧突变）。
+- `smooth_tangent`：向心 Catmull-Rom，非均匀关键帧时刻仍切向连续。
+- 旋转三个分量先做角度解包再插值：179°→-179° 走 2° 的短路，绝不会绕 358° 的远路。解包后的角度写入每帧输入清单。
+- 每帧只有一个共享时间，父节点轨道、子节点轨道和相机轨道在同一时刻一起采样；相机可动画 eye/target/up，投影参数保持场景原值。
+- 帧时刻可用 `frame_count`+`duration` 均匀生成，或用 `frame_times` 显式给出（须严格递增且落在 `[0, duration]`）。
+- 产物包括每帧五张 PNG 与 `channels.npz`（命名 `frame-NNN-*`）、带时间标签的 `contact-sheet.png`、堆叠全部线性颜色的 `frames.npz`，以及 `manifest.json`：逐帧记录时间、插值后的节点位姿、镜头和产物文件名。
+- 单帧重做端点从序列记录中读取冻结快照与该帧输入，走与批量渲染完全相同的采样路径，因此输出与整段中的对应帧字节一致，可直接用摘要比对。
+- 序列与单帧记录分别是 `building→complete/failed`、`running→complete/failed` 的持久记录；重启时未完成项转 failed，已完成帧不受影响。未知节点、重复轨道、非递增或越界关键帧时刻、插值出奇异缩放或零长度相机轴都在渲染前拒绝。
+
 ## 环境和资源边界
 
-每个网格最多 20,000 顶点 / 30,000 三角，场景最多 100 节点 / 60,000 可见三角。纹理最多 1024×1024，编码 PNG 最多 4 MB。成像边长 16–1024，保守估算采样缓冲不超过 160 MiB；这不是整个 Python 进程的内存限制，解码资源、JSON、数组临时副本和归档还需要内存。静帧没有阴影、透射、骨骼、动画或外部模型格式导入。
+每个网格最多 20,000 顶点 / 30,000 三角，场景最多 100 节点 / 60,000 可见三角。纹理最多 1024×1024，编码 PNG 最多 4 MB。成像边长 16–1024，保守估算采样缓冲不超过 160 MiB；这不是整个 Python 进程的内存限制，解码资源、JSON、数组临时副本和归档还需要内存。静帧没有阴影、透射、骨骼、动画或外部模型格式导入。关键帧序列只做离线逐帧采样，不引入骨骼、变形目标或视频编码。
 
 `.gnomon-data/gnomon.sqlite3` 保存记录，artifacts/ 保存校验摘要的结果。运行产物不进入 Git。应使用同一目录和单个 worker；不承诺跨进程互斥或分布式执行。HTTP 是可信环境中的成像接口，不含身份系统；不要直接暴露到公共网络。
 
 ## 验证与测试边界
 
-`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十一条工作流（含 `keyframe-sequence`）。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。

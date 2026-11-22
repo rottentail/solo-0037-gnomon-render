@@ -1,6 +1,7 @@
 import math
 from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from .errors import require
 
 
 class StrictModel(BaseModel):
@@ -130,3 +131,52 @@ class SheetInput(StrictModel):
     angles: list[float] = Field(default_factory=lambda: [0, 90, 180, 270], min_length=2, max_length=12)
     size: int = Field(default=128, ge=32, le=256)
     columns: int = Field(default=4, ge=1, le=6)
+
+
+class Keyframe(StrictModel):
+    time: float = Field(ge=0, le=1e6)
+    translate: tuple[float, float, float] | None = None
+    rotate: tuple[float, float, float] | None = None
+    scale: tuple[float, float, float] | None = None
+
+
+class NodeTrack(StrictModel):
+    node: str = Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_-]{0,63}$")
+    interpolation: Literal["step", "linear", "smooth", "smooth_tangent"] = "linear"
+    keyframes: list[Keyframe] = Field(min_length=2, max_length=64)
+
+
+class CameraKeyframe(StrictModel):
+    time: float = Field(ge=0, le=1e6)
+    eye: tuple[float, float, float] | None = None
+    target: tuple[float, float, float] | None = None
+    up: tuple[float, float, float] | None = None
+
+
+class CameraTrack(StrictModel):
+    interpolation: Literal["step", "linear", "smooth", "smooth_tangent"] = "linear"
+    keyframes: list[CameraKeyframe] = Field(min_length=2, max_length=64)
+
+
+class SequenceInput(StrictModel):
+    scene: str
+    width: int = Field(default=192, ge=16, le=1024)
+    height: int = Field(default=192, ge=16, le=1024)
+    samples: Literal[1, 2, 3] = 1
+    duration: float = Field(default=1.0, gt=0, le=1e6)
+    frame_count: int = Field(default=8, ge=2, le=24)
+    frame_times: list[float] | None = Field(default=None, max_length=24)
+    columns: int = Field(default=4, ge=1, le=6)
+    node_tracks: list[NodeTrack] = Field(default_factory=list, max_length=100)
+    camera_track: CameraTrack | None = None
+
+    @model_validator(mode="after")
+    def frame_schedule(self):
+        if self.frame_times is not None:
+            require(len(self.frame_times) >= 2, "sequence_frames", "explicit frame_times need at least two frames")
+            require(all(self.frame_times[i] < self.frame_times[i + 1] for i in range(len(self.frame_times) - 1)),
+                    "sequence_frames", "frame_times must be strictly increasing")
+            require(all(0.0 <= t <= self.duration for t in self.frame_times),
+                    "sequence_frames", "frame_times must lie within [0, duration]")
+        return self
+

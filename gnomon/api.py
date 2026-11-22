@@ -4,7 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from . import __version__
 from .errors import RenderError
-from .schema import MeshInput,TextureInput,SceneInput,RenderInput,CompareInput,SheetInput
+from .schema import MeshInput,TextureInput,SceneInput,RenderInput,CompareInput,SheetInput,SequenceInput
 from .service import RendererService
 
 
@@ -56,6 +56,12 @@ def create_app(root=None):
     @app.post("/v1/sheets",status_code=201)
     def sheet(payload:SheetInput,request:Request):
         return service(request).record_summary(service(request).sheet(payload.model_dump()))
+    @app.post("/v1/sequences",status_code=201)
+    def sequence(payload:SequenceInput,request:Request):
+        return service(request).record_summary(service(request).sequence(payload.model_dump()))
+    @app.post("/v1/sequences/{identity}/frames/{frame_index}/rerender",status_code=201)
+    def rerender_frame(identity:str,frame_index:int,request:Request):
+        return service(request).record_summary(service(request).rerender_frame(identity,frame_index))
     @app.post("/v1/renders/{identity}/bundles",status_code=201)
     def bundle(identity:str,request:Request):
         return service(request).record_summary(service(request).bundle(identity))
@@ -65,7 +71,7 @@ def create_app(root=None):
     @app.get("/v1/records")
     def list_records(kind:str,request:Request):
         from .errors import require
-        require(kind in {"mesh","texture","scene","render","comparison","sheet","bundle"},"record_kind","unknown record kind")
+        require(kind in {"mesh","texture","scene","render","comparison","sheet","bundle","sequence","sequence_frame"},"record_kind","unknown record kind")
         return [service(request).record_summary(item) for item in service(request).catalog.list(kind)]
     @app.get("/v1/artifacts/{identity}/{name}")
     def artifact(identity:str,name:str,request:Request):

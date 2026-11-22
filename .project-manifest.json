@@ -25,7 +25,7 @@
     {
       "id": "math3d",
       "path": "gnomon/math3d.py",
-      "responsibility": "世界变换"
+      "responsibility": "世界变换与关键帧插值"
     },
     {
       "id": "scene",
@@ -71,6 +71,11 @@
       "id": "sheet",
       "path": "gnomon/sheet.py",
       "responsibility": "多镜头排版"
+    },
+    {
+      "id": "sequence",
+      "path": "gnomon/sequence.py",
+      "responsibility": "关键帧采样与静帧序列"
     },
     {
       "id": "artifacts",
@@ -252,6 +257,27 @@
       "success": "多视角图和镜头矩形索引",
       "failure": "无效镜头失败无完整校样",
       "verification": ".venv/bin/python -m gnomon.demo --flow view-sheet"
+    },
+    {
+      "id": "keyframe-sequence",
+      "name": "关键帧静帧序列",
+      "entry": "POST /v1/sequences",
+      "module_ids": [
+        "sequence",
+        "math3d",
+        "scene",
+        "raster",
+        "channels",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "逐帧多通道、联系表与逐帧输入清单，单帧重做字节一致",
+      "failure": "未知节点、非递增关键帧或奇异插值在渲染前拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow keyframe-sequence"
     },
     {
       "id": "render-bundle",

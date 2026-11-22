@@ -12,8 +12,9 @@ from .inspection import inspect_pixel
 from .comparison import compare_frames
 from .sheet import build_sheet
 from .bundle import build_bundle
+from .sequence import schedule_times, validate_tracks, frame_specs, build_sequence, render_frame
 from .errors import RenderError, require
-from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput
+from .schema import MeshInput, TextureInput, SceneInput, RenderInput, CompareInput, SheetInput, SequenceInput
 
 
 class RendererService:
@@ -157,6 +158,58 @@ class RendererService:
                 files = {name:self.artifacts.read(render,name) for name in render["details"]["artifacts"]}
                 raw,manifest = build_bundle(render,files)
                 return self._complete(record,{"render.zip":raw},{"file_count":len(files),"manifest_format":manifest["format"]})
+            except Exception as exc:
+                self._fail(record,exc)
+                raise
+
+    def sequence(self,request):
+        parsed = SequenceInput.model_validate(request).model_dump()
+        with self.operation_lock:
+            scene = self.catalog.get(parsed["scene"],"scene")
+            require(scene["state"]=="active","scene_archived","scene is archived",409)
+            _,snapshot = self._snapshot(scene)
+            times = schedule_times(parsed)
+            # Full track validation and per-frame pose pre-sampling happen before
+            # the record exists, so a bad sequence leaves no partial artifacts.
+            validate_tracks(parsed,snapshot["scene"],times)
+            specs = frame_specs(parsed,snapshot["scene"],times)
+            record = self.catalog.create("sequence",{"request":parsed,"snapshot":snapshot},"building")
+            try:
+                files,manifest = build_sequence(snapshot,parsed,specs)
+                files["manifest.json"] = canonical(manifest).encode()
+                return self._complete(record,files,{"frames":len(specs),"manifest":manifest})
+            except Exception as exc:
+                self._fail(record,exc)
+                raise
+
+    def _frame_spec(self,sequence_record,frame_index):
+        manifest = sequence_record["details"]["manifest"]
+        frames = manifest["frames"]
+        require(0 <= frame_index < len(frames),"frame_bounds","frame index outside the sequence",404)
+        frame = frames[frame_index]
+        require(frame["index"] == frame_index,"frame_bounds","frame index mismatch",404)
+        return frame, {"index": frame["index"], "time": frame["time"],
+                       "poses": frame["inputs"]["node_poses"], "lens": frame["inputs"]["lens"]}
+
+    def rerender_frame(self,identity,frame_index):
+        with self.operation_lock:
+            sequence_record = self.catalog.get(identity,"sequence")
+            require(sequence_record["state"]=="complete","sequence_incomplete",
+                    "sequence must be complete before re-rendering a frame",409)
+            frame,spec = self._frame_spec(sequence_record,frame_index)
+            snapshot = sequence_record["payload"]["snapshot"]
+            request = sequence_record["payload"]["request"]
+            record = self.catalog.create("sequence_frame",
+                                         {"sequence":identity,"frame":frame_index,"snapshot":snapshot,
+                                          "request":request,"spec":spec},"running")
+            try:
+                files,_,_ = render_frame(snapshot,request,spec)
+                details = {"sequence":identity,"frame":frame_index,
+                           "artifacts":{name:f"frame-{frame_index:03d}-{name}" for name in sorted(files)}}
+                # Keep the same artifact names as the batch frame so callers can
+                # compare the two outputs directly.
+                renamed = {f"frame-{frame_index:03d}-{name}":raw for name,raw in files.items()}
+                return self._complete(record,renamed,details)
             except Exception as exc:
                 self._fail(record,exc)
                 raise

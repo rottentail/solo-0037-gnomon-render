@@ -40,6 +40,10 @@
       "command": ".venv/bin/python -m gnomon.demo --flow view-sheet"
     },
     {
+      "workflow_id": "keyframe-sequence",
+      "command": ".venv/bin/python -m gnomon.demo --flow keyframe-sequence"
+    },
+    {
       "workflow_id": "render-bundle",
       "command": ".venv/bin/python -m gnomon.demo --flow render-bundle"
     },
