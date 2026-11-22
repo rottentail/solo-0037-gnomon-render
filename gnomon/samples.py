@@ -15,6 +15,41 @@ def screen_mesh():
             "triangles":[[0,1,2],[0,2,3]],"normals":[[0,0,1]]*4,"uv":[[0,0],[1,0],[1,1],[0,1]]}
 
 
+def box_mesh():
+    # A closed box with per-corner normals and UVs. Each side owns a full
+    # atlas tile, so UV and normal values jump across a shared edge while the
+    # vertex indices, triangle indices and face identity stay unchanged.
+    positions = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
+                 [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]]
+    triangles = [[4,5,6],[4,6,7],
+                 [1,0,3],[1,3,2],
+                 [5,1,2],[5,2,6],
+                 [0,4,7],[0,7,3],
+                 [7,6,2],[7,2,3],
+                 [0,1,5],[0,5,4]]
+    axis = [[0,0,1],[0,0,-1],[1,0,0],[-1,0,0],[0,1,0],[0,-1,0]]
+    corner_normals = [[side]*3 for side in axis for _ in range(2)]
+    tile = [[[0,0],[1,0],[1,1]],[[0,0],[1,1],[0,1]]]
+    return {"label":"闭合分面盒","positions":positions,"triangles":triangles,
+            "corner_normals":corner_normals,"corner_uv":[tile[i%2] for i in range(len(triangles))]}
+
+
+def face_material_scene(mesh,texture):
+    # The legacy node surface is the default for every unlisted side. Two
+    # groups override the top and the bottom only; the grille texture's holes
+    # reveal the solid cavity behind it.
+    return {"label":"镂空与实心分面盒","nodes":[
+        {"key":"box","mesh":mesh,
+         "surface":{"color":[0.82,0.42,0.16]},
+         "material_groups":[
+             {"name":"grille","faces":[8,9],
+              "surface":{"texture":texture,"color":[1,1,1],"alpha_cutoff":0.5}},
+             {"name":"cavity","faces":[10,11],
+              "surface":{"color":[0.1,0.16,0.3],"unlit":True}}]}],
+        "lens":{"eye":[2.4,4.4,2.4],"target":[0,0,0],"near":0.1,"far":30},
+        "light":{"toward":[1,3,4],"energy":0.85,"ambient":0.18}}
+
+
 def checker_texture():
     image = Image.new("RGBA",(32,32))
     for y in range(32):

@@ -13,6 +13,11 @@ class MeshInput(StrictModel):
     triangles: list[tuple[int, int, int]] = Field(min_length=1, max_length=30000)
     normals: list[tuple[float, float, float]] | None = None
     uv: list[tuple[float, float]] | None = None
+    # Optional per-corner attributes, one triple per triangle. They allow UV
+    # and normal seams along material boundaries without splitting vertices,
+    # so face identity used by picking is preserved.
+    corner_normals: list[list[tuple[float, float, float]]] | None = Field(default=None, max_length=30000)
+    corner_uv: list[list[tuple[float, float]]] | None = Field(default=None, max_length=30000)
 
 
 class TextureInput(StrictModel):
@@ -49,12 +54,21 @@ class Surface(StrictModel):
         return self
 
 
+class MaterialGroup(StrictModel):
+    name: str = Field(min_length=1, max_length=64)
+    faces: list[int] = Field(min_length=1, max_length=30000)
+    surface: Surface
+
+
 class Node(StrictModel):
     key: str = Field(pattern=r"^[a-zA-Z][a-zA-Z0-9_-]{0,63}$")
     parent: str | None = None
     mesh: str | None = None
     pose: Transform = Field(default_factory=Transform)
+    # Legacy single-material input stays valid and becomes the default group.
     surface: Surface = Field(default_factory=Surface)
+    # Optional face-level assignment. Unlisted faces use `surface`.
+    material_groups: list[MaterialGroup] = Field(default_factory=list, max_length=64)
     visible: bool = True
 
 

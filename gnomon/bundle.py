@@ -11,8 +11,10 @@ def build_bundle(render,files):
                              "depth":"OpenGL NDC [-1,1], +inf for background",
                              "world":"nearest covered subpixel world position",
                              "coverage":"fraction of covered uniform samples",
-                             "normal":"world-space unit normal at nearest sample",
-                             "object_id":"scene node index, 0 background"}}
+                             "normal":"world-space unit normal at nearest sample (corner seam aware)",
+                             "object_id":"scene node index, 0 background",
+                             "face_id":"triangle index inside the source mesh, 0 background",
+                             "material_id":"index into metadata.materials[object_id]; 0 is the node surface"}}
     output = BytesIO()
     with ZipFile(output,"w",ZIP_DEFLATED) as archive:
         for name,raw in sorted(files.items()):

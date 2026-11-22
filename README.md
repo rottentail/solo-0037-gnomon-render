@@ -24,9 +24,12 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 - 透视 fov 为垂直视角，正交 span 为垂直世界长度；near/far 为正距离。六个齐次平面裁剪后进行透视校正插值。
 - PNG 纹理按未附 ICC 的 sRGB 解码，UV 原点在左下，双线性采样。repeat/clamp 均可。alpha_cutoff 是二值裁切，不表示半透明混合。
 - 材质基色为 sRGB，着色和抗锯齿平均在线性空间，PNG 最后编码回 sRGB；超出显示范围的亮度仅在 PNG 截断，NPZ 保留。
+- 节点可用 `material_groups` 给同一网格的三角形分配不同材质：每组有唯一 `name`、互不重叠的 `faces`（网格内三角序号）和独立 `surface`。纹理解码、repeat/clamp、alpha_cutoff、unlit 与 double_sided 都随实际命中的面生效。未列出的面沿用节点旧有的 `surface`，所以旧的单材质输入意义不变；该默认面的组名为 `default`。
+- 网格可选带逐角点 `corner_uv` / `corner_normals`（每个三角三项）。它们让材质边界两侧的 UV 与法线不连续而不复制顶点，顶点数、三角序号和面身份保持不变；未提供时退回逐顶点 `uv` / `normals`。
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
-- samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景。
+- samples=1/2/3 是每轴均匀采样。颜色是全体子采样含背景的平均；拾取、深度、法线、世界位置来自最近的有覆盖子采样。对象标识为场景节点序号，0 为背景；面标识为网格内三角序号，材质标识索引 `metadata.materials[node]`，其中 0 为节点表面。
+- 面级材质不改变拾取归属：`GET /v1/renders/{id}/pixels/{x}/{y}` 仍返回原节点与网格，并额外给出该像素命中的 `face` 与 `material`。
 - region=[x,y,w,h] 使用整图左上坐标和原始镜头，不改变构图。输出像素坐标是区域内坐标；拾取另返回全图子采样位置。
 - 深度 NPZ 是 OpenGL NDC [-1,1]，背景为 +inf；depth.png 每张按自身有效深度范围做可读预览，不能当作物理距离或跨图绝对标尺。
 
@@ -34,13 +37,13 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 | 入口 | 结果与边界 |
 |---|---|
-| POST /v1/meshes | 三角索引、面积、法线、UV、包围盒校验，退化面拒绝 |
+| POST /v1/meshes | 三角索引、面积、法线、UV（含逐角点接缝）、包围盒校验，退化面拒绝 |
 | POST /v1/textures | PNG 解码、直通透明度、尺寸与格式约束 |
-| POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
+| POST /v1/scenes | 唯一键、父图、资源、面组归属与相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
 | POST /v1/preflight | 世界包围盒、可见三角数、预计帧缓冲与可受理判断 |
 | POST /v1/renders | 冻结场景和实际资源，生成五张 PNG、channels.npz、metadata.json |
-| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其世界坐标，背景返回空表面 |
+| GET /v1/renders/{id}/pixels/{x}/{y} | 最近子采样表面及其节点、网格、面、材质与世界坐标，背景返回空表面 |
 | POST /v1/comparisons | 相同镜头、尺寸、区域与采样规则下，比较线性颜色、轮廓、语义节点及深度 |
 | POST /v1/sheets | 绕目标的多个 Y 轴视角，整合 sheet.png 与 index.json |
 | POST /v1/renders/{id}/bundles | 自描述 ZIP，包含资源输入、通道语义及逐文件摘要 |
@@ -55,4 +58,4 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 ## 验证与测试边界
 
-`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。
+`gnomon.demo` 是生产 API 的有界操作演示，`--flow` 可单独运行十条工作流，另有 `--flow face-material` 演示同一闭合网格上的面组、接缝与错误引用。它实际生成与读取产物，展示正常和拒绝路径。自动化测试套件尚未建立（testing: deferred），本基线不包含 tests、测试框架和 test_command。

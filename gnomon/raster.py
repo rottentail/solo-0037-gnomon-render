@@ -11,14 +11,15 @@ def allocate(width,height,samples,background):
     shape = (height*samples,width*samples)
     return {"color":np.broadcast_to(srgb_to_linear(background),(*shape,3)).copy(),
             "depth":np.full(shape,np.inf),"normal":np.zeros((*shape,3)),
-            "object_id":np.zeros(shape,dtype=np.int32),"world":np.zeros((*shape,3))}
+            "object_id":np.zeros(shape,dtype=np.int32),"face_id":np.zeros(shape,dtype=np.int32),
+            "material_id":np.zeros(shape,dtype=np.int32),"world":np.zeros((*shape,3))}
 
 
 def edge(a,b,x,y):
     return (b[0]-a[0])*(y-a[1])-(b[1]-a[1])*(x-a[0])
 
 
-def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,region,samples):
+def raster_triangle(vertex,object_id,face_id,material_id,surface,texture,light,buffers,width,height,region,samples):
     clip = vertex[:,:4]
     if np.any(clip[:,3] <= 1e-12):
         return 0
@@ -69,6 +70,8 @@ def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,
         buffers["normal"][by,bx] = normals
         buffers["world"][by,bx] = attributes[:,:3]
         buffers["object_id"][by,bx] = object_id
+        buffers["face_id"][by,bx] = face_id
+        buffers["material_id"][by,bx] = material_id
         count += len(bx)
     return count
 
@@ -87,13 +90,27 @@ def render_samples(compiled,request):
     stats = {"input_triangles":compiled["triangles"],"clipped_triangles":0,"written_samples":0,"estimated_bytes":estimated}
     for obj in compiled["objects"]:
         positions = obj["positions"]
+        faces = obj["triangles"]
         homogeneous = np.column_stack([positions,np.ones(len(positions))])
         clip = homogeneous @ (projection @ view).T
-        uv = obj["uv"] if obj["uv"] is not None else np.zeros((len(positions),2))
-        packed = np.column_stack([clip,positions,obj["normals"],uv])
-        texture = textures.get(obj["surface"]["texture"])
-        for face in obj["triangles"]:
-            for triangle in clip_triangle(packed[face]):
+        corner_uv = obj["corner_uv"]
+        if corner_uv is None:
+            corner_uv = np.zeros((len(faces),3,2))
+        # One packed row per triangle corner: clip xyzw, world xyz, corner
+        # normal, corner uv. Clipping interpolates all columns, so a corner
+        # seam keeps its own shading attribute on each side of the boundary.
+        packed = np.concatenate([clip[faces],positions[faces],obj["corner_normals"],corner_uv],axis=2)
+        surfaces = obj["surfaces"]
+        # A missing texture means "opaque color", so a face whose material
+        # carries no texture must never reuse another group's sampler.
+        surface_textures = [None if surface["texture"] is None else textures[surface["texture"]] for surface in surfaces]
+        for face, corners in enumerate(packed):
+            surface_index = int(obj["face_surface"][face])
+            for triangle in clip_triangle(corners):
                 stats["clipped_triangles"] += 1
-                stats["written_samples"] += raster_triangle(triangle,obj["id"],obj["surface"],texture,scene["light"],buffers,width,height,region,samples)
-    return buffers,{"view":view.tolist(),"projection":projection.tolist(),"region":list(region),"stats":stats}
+                stats["written_samples"] += raster_triangle(
+                    triangle,obj["id"],face,surface_index,surfaces[surface_index],
+                    surface_textures[surface_index],scene["light"],buffers,width,height,region,samples)
+    return buffers,{"view":view.tolist(),"projection":projection.tolist(),"region":list(region),"stats":stats,
+                    "materials":{str(obj["id"]):obj["group_names"] for obj in compiled["objects"]},
+                    "meshes":{str(obj["id"]):obj["mesh_id"] for obj in compiled["objects"]}}
