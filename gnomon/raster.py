@@ -62,7 +62,7 @@ def raster_triangle(vertex,object_id,surface,texture,light,buffers,width,height,
         weights = bary/clip[:,3]
         weights /= weights.sum(axis=1,keepdims=True)
         attributes = weights @ vertex[:,4:]
-        rgb,keep,normals = shade(surface,attributes[:,3:6],attributes[:,6:8],texture,light)
+        rgb,keep,normals = shade(surface,attributes[:,3:6],attributes[:,6:8],texture,light,attributes[:,8:11])
         bx,z,attributes,rgb,normals = bx[keep],z[keep],attributes[keep],rgb[keep],normals[keep]
         buffers["depth"][by,bx] = z
         buffers["color"][by,bx] = rgb
@@ -90,7 +90,12 @@ def render_samples(compiled,request):
         homogeneous = np.column_stack([positions,np.ones(len(positions))])
         clip = homogeneous @ (projection @ view).T
         uv = obj["uv"] if obj["uv"] is not None else np.zeros((len(positions),2))
-        packed = np.column_stack([clip,positions,obj["normals"],uv])
+        # Vertex colors are authored sRGB; linearize once per frame so that the
+        # clipping intersection and perspective-correct interpolation stay in linear space.
+        vertex_colors = obj["vertex_colors"] if obj["vertex_colors"] is not None else np.ones((len(positions),3))
+        if obj["vertex_colors"] is not None:
+            vertex_colors = srgb_to_linear(vertex_colors)
+        packed = np.column_stack([clip,positions,obj["normals"],uv,vertex_colors])
         texture = textures.get(obj["surface"]["texture"])
         for face in obj["triangles"]:
             for triangle in clip_triangle(packed[face]):

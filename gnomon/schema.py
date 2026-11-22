@@ -13,6 +13,7 @@ class MeshInput(StrictModel):
     triangles: list[tuple[int, int, int]] = Field(min_length=1, max_length=30000)
     normals: list[tuple[float, float, float]] | None = None
     uv: list[tuple[float, float]] | None = None
+    vertex_colors: list[tuple[float, float, float]] | None = None
 
 
 class TextureInput(StrictModel):

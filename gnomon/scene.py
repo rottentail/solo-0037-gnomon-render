@@ -49,6 +49,7 @@ def compile_scene(payload, resource_getter, allow_retired=False):
             points.append(world)
             objects.append({"id":index,"key":node["key"],"positions":world,"normals":normals,
                             "triangles":np.asarray(mesh["triangles"]),"uv":None if mesh["uv"] is None else np.asarray(mesh["uv"]),
+                            "vertex_colors":None if mesh.get("vertex_colors") is None else np.asarray(mesh["vertex_colors"]),
                             "surface":node["surface"],"mirrored":np.linalg.det(matrices[node["key"]][:3,:3])<0})
     camera_matrices(payload["lens"],1)
     unit(payload["light"]["toward"])

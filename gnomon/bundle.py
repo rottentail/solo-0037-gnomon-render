@@ -8,6 +8,8 @@ def build_bundle(render,files):
     manifest = {"format":"gnomon-render-bundle/1","render":render,
                 "files":{name:{"sha256":hashlib.sha256(raw).hexdigest(),"bytes":len(raw)} for name,raw in files.items()},
                 "semantics":{"color":"linear RGB in NPZ; clamped sRGB in PNG",
+                             "color_composition":"fragment linear RGB = linear(surface color) * linear(vertex color, white when the mesh has none) * texture RGB, then ambient+Lambert lighting",
+                             "vertex_color":"optional per-vertex sRGB input on the mesh; decoded to linear, perspective-correct interpolated, and clipped like other surface attributes",
                              "depth":"OpenGL NDC [-1,1], +inf for background",
                              "world":"nearest covered subpixel world position",
                              "coverage":"fraction of covered uniform samples",

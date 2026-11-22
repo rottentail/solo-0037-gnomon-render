@@ -31,6 +31,13 @@ def prepare_mesh(payload):
         uv = np.asarray(uv, dtype=np.float64)
         require(uv.shape == (len(positions),2) and np.isfinite(uv).all() and bool(np.all(np.abs(uv)<=1e6)), "mesh_uv", "one finite UV pair per vertex required")
         uv = uv.tolist()
+    vertex_colors = payload.get("vertex_colors")
+    if vertex_colors is not None:
+        vertex_colors = np.asarray(vertex_colors, dtype=np.float64)
+        require(vertex_colors.shape == (len(positions),3) and np.isfinite(vertex_colors).all(), "mesh_vertex_color", "one finite vertex color triplet per vertex required")
+        require(bool(np.all(vertex_colors >= 0) and np.all(vertex_colors <= 1)), "mesh_vertex_color", "vertex colors must be sRGB in [0,1]")
+        vertex_colors = vertex_colors.tolist()
     return {"label":payload["label"], "positions":positions.tolist(), "triangles":faces.tolist(),
-            "normals":normals.tolist(), "uv":uv, "bounds":world_bounds(positions),
+            "normals":normals.tolist(), "uv":uv, "vertex_colors":vertex_colors,
+            "bounds":world_bounds(positions),
             "area":float(area2.sum()/2), "vertex_count":len(positions), "triangle_count":len(faces)}

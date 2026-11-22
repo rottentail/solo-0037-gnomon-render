@@ -4,8 +4,10 @@ from .math3d import unit
 from .texture import sample_texture
 
 
-def shade(surface, normals, uv, texture, light):
+def shade(surface, normals, uv, texture, light, vertex_color):
     base = np.tile(srgb_to_linear(surface["color"]),(len(normals),1))
+    # Vertex colors arrive as linear RGB factors: meshes without them pass ones.
+    base *= vertex_color
     alpha = np.ones(len(normals))
     if texture is not None:
         texels = sample_texture(texture,uv,surface["wrap"])

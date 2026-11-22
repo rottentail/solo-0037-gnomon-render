@@ -1,6 +1,6 @@
 import numpy as np
 
-# Clip the packed vertex [clip xyzw, world xyz, normal xyz, uv xy].
+# Clip the packed vertex [clip xyzw, world xyz, normal xyz, uv xy, vertex color rgb].
 PLANES = np.array([[1,0,0,1],[-1,0,0,1],[0,1,0,1],[0,-1,0,1],[0,0,1,1],[0,0,-1,1]])
 
 

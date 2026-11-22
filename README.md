@@ -18,11 +18,14 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 服务运行后可执行 `.venv/bin/python examples/http_walkthrough.py`，通过真实 HTTP 上传样例并下载静帧。
 
+`.venv/bin/python examples/vertex_color_proof.py` 生成顶点色校样：平面线性色带在两种对角线剖分与斜拍下保持不变，非共面四角配色展示换剖分的真实折痕差异，并以跨近平面成像区分裁切接缝；产物说明见 `run-output/vertex-color-proof/README.md`。
+
 ## 成像约定
 
 - 右手世界坐标；Y 向上，相机看向 target。旋转单位为度，局部顺序为 X、Y、Z，随后由父节点变换进入世界空间。
 - 透视 fov 为垂直视角，正交 span 为垂直世界长度；near/far 为正距离。六个齐次平面裁剪后进行透视校正插值。
 - PNG 纹理按未附 ICC 的 sRGB 解码，UV 原点在左下，双线性采样。repeat/clamp 均可。alpha_cutoff 是二值裁切，不表示半透明混合。
+- 网格可携带逐顶点 `vertex_colors`，按未附 ICC 的 sRGB、[0,1] 导入；解码到线性后做透视校正插值，并与基色、纹理相乘（线性基色 × 线性顶点色 × 线性纹理，再乘光照）。缺少该字段的旧网格等价于顶点色恒为 1，成像不变。
 - 材质基色为 sRGB，着色和抗锯齿平均在线性空间，PNG 最后编码回 sRGB；超出显示范围的亮度仅在 PNG 截断，NPZ 保留。
 - 生成法线为相邻三角形面积加权；可显式提供逐顶点法线。非均匀缩放使用逆转置法线变换。
 - 单面剔除按变换后的顶点绕序；镜像会翻转绕序。双面不会自动把法线朝向相机。共面等深片元保留场景遍历时先出现的表面。
@@ -34,7 +37,7 @@ GNOMON_DATA=.gnomon-data .venv/bin/uvicorn gnomon.api:app --host 127.0.0.1 --por
 
 | 入口 | 结果与边界 |
 |---|---|
-| POST /v1/meshes | 三角索引、面积、法线、UV、包围盒校验，退化面拒绝 |
+| POST /v1/meshes | 三角索引、面积、法线、UV、顶点色、包围盒校验，退化面拒绝 |
 | POST /v1/textures | PNG 解码、直通透明度、尺寸与格式约束 |
 | POST /v1/scenes | 唯一键、父图、资源和相机校验，不可变场景 |
 | POST /v1/scenes/{id}/revisions | 完整新修订，predecessor 追溯，不覆盖前版本 |
