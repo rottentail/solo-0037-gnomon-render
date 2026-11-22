@@ -73,6 +73,11 @@
       "responsibility": "多镜头排版"
     },
     {
+      "id": "stereo",
+      "path": "gnomon/stereo.py",
+      "responsibility": "左右眼像对、对应与遮挡核验"
+    },
+    {
       "id": "artifacts",
       "path": "gnomon/artifacts.py",
       "responsibility": "产物完整性"
@@ -252,6 +257,29 @@
       "success": "多视角图和镜头矩形索引",
       "failure": "无效镜头失败无完整校样",
       "verification": ".venv/bin/python -m gnomon.demo --flow view-sheet"
+    },
+    {
+      "id": "stereo-pair",
+      "name": "左右眼像对",
+      "entry": "POST /v1/renders (stereo)",
+      "module_ids": [
+        "stereo",
+        "camera",
+        "scene",
+        "raster",
+        "channels",
+        "artifacts",
+        "bundle",
+        "service"
+      ],
+      "steps": [
+        "解析输入并读取拥有者事实",
+        "执行领域计算并与下游通道交互",
+        "返回可观察结果或领域拒绝"
+      ],
+      "success": "显式单位的双眼像对及可信对应",
+      "failure": "正交或基线不小于汇聚距离拒绝",
+      "verification": ".venv/bin/python -m gnomon.demo --flow stereo-pair"
     },
     {
       "id": "render-bundle",

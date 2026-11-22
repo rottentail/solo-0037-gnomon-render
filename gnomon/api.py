@@ -50,6 +50,9 @@ def create_app(root=None):
     @app.get("/v1/renders/{identity}/pixels/{x}/{y}")
     def inspect(identity:str,x:int,y:int,request:Request):
         return service(request).inspect(identity,x,y)
+    @app.get("/v1/renders/{identity}/correspondence/{side}/{x}/{y}")
+    def correspondence(identity:str,side:str,x:int,y:int,request:Request):
+        return service(request).stereo_correspondence(identity,side,x,y)
     @app.post("/v1/comparisons",status_code=201)
     def compare(payload:CompareInput,request:Request):
         return service(request).record_summary(service(request).compare(payload.model_dump()))

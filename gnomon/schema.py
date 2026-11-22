@@ -103,12 +103,34 @@ class SceneInput(StrictModel):
         return self
 
 
+class Distance(StrictModel):
+    """A physical distance with an explicit unit; never a bare number."""
+
+    value: float = Field(gt=0, le=1e9)
+    unit: Literal["mm", "cm", "m", "in"]
+
+
+class StereoRig(StrictModel):
+    """Parallel off-axis stereo rig.
+
+    ``world_unit`` declares what one scene coordinate means, so the baseline
+    and convergence distance convert into scene units without guessing.
+    ``convergence`` is the distance from the midpoint of the baseline to the
+    zero-parallax plane; it defaults to the authored lens target distance.
+    """
+
+    interocular: Distance
+    convergence: Distance | None = None
+    world_unit: Literal["mm", "cm", "m", "in"] = "m"
+
+
 class RenderInput(StrictModel):
     scene: str
     width: int = Field(default=256, ge=16, le=1024)
     height: int = Field(default=256, ge=16, le=1024)
     samples: Literal[1, 2, 3] = 1
     region: tuple[int, int, int, int] | None = None
+    stereo: StereoRig | None = None
 
     @model_validator(mode="after")
     def region_bounds(self):

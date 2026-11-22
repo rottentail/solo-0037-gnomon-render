@@ -40,6 +40,10 @@
       "command": ".venv/bin/python -m gnomon.demo --flow view-sheet"
     },
     {
+      "workflow_id": "stereo-pair",
+      "command": ".venv/bin/python -m gnomon.demo --flow stereo-pair"
+    },
+    {
       "workflow_id": "render-bundle",
       "command": ".venv/bin/python -m gnomon.demo --flow render-bundle"
     },

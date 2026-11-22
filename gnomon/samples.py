@@ -35,3 +35,29 @@ def compose_scene(mesh,screen,texture):
         {"key":"echo","mesh":mesh,"pose":{"translate":[1.0,-0.6,-0.8],"scale":[0.35,0.35,0.35]},"surface":{"color":[0.2,0.7,0.8]}}
     ],"lens":{"eye":[3,2.2,4],"target":[0,0,0],"near":0.1,"far":30},
     "light":{"toward":[1,3,4],"energy":0.85,"ambient":0.18}}
+
+
+def stereo_scene(mesh,screen):
+    """Three unlit panels at distinct depths plus a near prism for occlusion.
+
+    Depths are chosen so the pair has crossed and uncrossed parallax together
+    with genuine occlusion and silhouette disagreement between the eyes.
+    """
+    return {"label":"立体深度层","nodes":[
+        {"key":"backdrop","mesh":screen,"pose":{"translate":[0,0,-2.2],"scale":[1.2,1.2,1.2]},
+         "surface":{"color":[0.22,0.36,0.72],"unlit":True}},
+        {"key":"middle","mesh":screen,"pose":{"translate":[-0.15,0.1,0.0],"scale":[0.55,0.55,0.55]},
+         "surface":{"color":[0.28,0.78,0.34],"unlit":True}},
+        {"key":"foreground","mesh":mesh,"pose":{"translate":[0.5,-0.15,1.1],"scale":[0.32,0.32,0.32]},
+         "surface":{"color":[0.88,0.48,0.14],"unlit":True}},
+        {"key":"edge","mesh":screen,"pose":{"translate":[-1.05,0.55,-0.6],"scale":[0.4,0.4,0.4]},
+         "surface":{"color":[0.72,0.3,0.68],"unlit":True}},
+    ],"lens":{"eye":[0,0,5],"target":[0,0,0],"near":0.1,"far":40,"fov":40},
+    "light":{"toward":[1,3,4],"energy":0.85,"ambient":0.18}}
+
+
+def stereo_rig(interocular_value=6.5,interocular_unit="cm",convergence=None,convergence_unit="m"):
+    rig={"interocular":{"value":interocular_value,"unit":interocular_unit},"world_unit":"m"}
+    if convergence is not None:
+        rig["convergence"]={"value":convergence,"unit":convergence_unit}
+    return rig
